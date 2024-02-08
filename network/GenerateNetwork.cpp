@@ -7,6 +7,31 @@
 
 using namespace std;
 
+void dfsCheck(vector<vector<int>>& matrix, vector<bool>& visited, int v=0){
+    visited[v] = true;
+
+    for(auto u:matrix[v]){
+        if(!visited[u]){
+            dfsCheck(matrix, visited, u);
+        }
+    }
+}
+
+bool checkConnected(vector<vector<int>> matrix){
+    int n = matrix.size();
+
+    vector<bool> visited;
+    visited.resize(n);
+
+    dfsCheck(matrix, visited);
+
+    for(auto x: visited){
+        if(!x)  return false;
+    }
+
+    return true;
+}
+
 void generateNetwork() {
     int n = NUMBER_OF_NODES;
     int maxp = MAX_PEERS_CONNECTED;
