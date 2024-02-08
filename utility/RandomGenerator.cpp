@@ -3,7 +3,7 @@
 
 using namespace std;
 
-int uniform_distribution(int min, int max) {
+int uniformDistribution(int min, int max) {
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<int> distribution(min, max);

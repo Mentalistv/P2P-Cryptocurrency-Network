@@ -1,3 +1,3 @@
 #include <random>
 
-int uniform_distribution(int min, int max)
+int uniformDistribution(int min, int max);
