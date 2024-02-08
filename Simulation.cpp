@@ -5,6 +5,7 @@
 #include "constants/SimulationParamenters.h"
 #include "constants/NodeConstants.h"
 #include "headers/Node.h"
+#include "headers/Network.h"
 
 using namespace std;
 
@@ -20,6 +21,10 @@ int main(int argc, char const *argv[]) {
 
         nodes.push_back(newnode);
     }
+
+
+    generateNetwork();
+    
 
     return 0;
 }
