@@ -1,0 +1,7 @@
+#ifndef SIMULATION_PARAMETERS_H
+#define SIMULATION_PARAMETERS_H
+
+const int NUMBER_OF_NODES = 9;
+
+
+#endif // NODE_CONSTANTS_H
