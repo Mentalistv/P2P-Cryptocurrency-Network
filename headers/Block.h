@@ -14,16 +14,13 @@ using namespace std;
 
 class Block {
     public:
-        Block(string block_id, Node ownr, unordered_map <string, Block> blkchn, string prev_blk_id, double t, Transaction cb_txn, vector <Transaction> i_txn);
+        Block(string block_id, string ownr, string prev_blk_id, double time, vector <Transaction> i_txn, long h);
         
         string id;
-        Node owner;
-
-        unordered_map <string, Block> blockchain;
+        string owner;
 
         string prev_block_id;
-        double time;
-        Transaction coinbase_txn;
+        double timestamp;
         vector <Transaction> included_txn;
-        
+        long height;
 };
