@@ -4,27 +4,25 @@
 
 #include "constants/SimulationParamenters.h"
 #include "constants/NodeConstants.h"
-#include "headers/Node.h"
 #include "headers/Network.h"
 
 using namespace std;
 
+vector<Node> nodes;
 
-int main(int argc, char const *argv[]) {
-    
-    char c = 'A';
-    vector<Node> nodes;
+int main(int argc, char const *argv[]) {    
+    int node_id = 0;
     for (int i = 0; i < NUMBER_OF_NODES; i++) {
-        // TODO : Generate a random ID
-        string id(1, c + i);
-        Node newnode(id, NODE_FAST, NODE_CPU_FAST);
-
+        Node newnode(node_id++, NODE_FAST, NODE_CPU_FAST);
         nodes.push_back(newnode);
     }
 
+    generateNetwork(nodes);
 
-    generateNetwork();
-    
+
+    // TODO: initilize fast slow nodes and fast slow CPUs
+
+    // TODO: Add initilial events
 
     return 0;
 }

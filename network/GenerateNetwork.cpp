@@ -12,9 +12,9 @@ using namespace std;
 void dfsCheck(vector<vector<bool>>& matrix, vector<bool>& visited, int v=0){
     visited[v] = true;
 
-    for(auto u:matrix[v]){
-        if(!visited[u]){
-            dfsCheck(matrix, visited, u);
+    for(int i=0; i<matrix[v].size(); i++){
+        if(matrix[v][i] && !visited[i]){
+            dfsCheck(matrix, visited, i);
         }
     }
 }
@@ -41,7 +41,26 @@ void reinitialize(vector<vector<bool>>& matrix, vector<int>& degrees) {
     fill(degrees.begin(), degrees.end(), 0);
 }
 
-void generateNetwork() {
+
+void showGraphDegrees(vector<int> degrees) {
+    for (int deg: degrees)
+        cout << deg << " ";
+
+    cout << endl;
+}
+
+void initilializeNodeLinks(vector<Node> &nodes, vector<vector<bool>> &matrix) {
+    for (int i = 0; i < matrix.size(); i++) {
+        vector<int> links;
+        for (int j = 0; j < matrix[0].size(); j++) {
+            if (matrix[i][j])
+                links.push_back(j);
+        }
+        nodes[i].links = links;
+    }
+}
+
+void generateNetwork(vector<Node> &nodes) {
     int n = NUMBER_OF_NODES;
     int maxp = MAX_PEERS_CONNECTED;
     int minp = MIN_PEERS_CONNECTED;
@@ -54,7 +73,6 @@ void generateNetwork() {
         reinitialize(matrix, degrees);
 
         for (int i = 0; i < n; i++) {
-            cout << i << endl;
             if (degrees[i] == maxp)
                 continue;
 
@@ -62,9 +80,6 @@ void generateNetwork() {
 
             while (more_needed > 0) {
                 int adj_node = uniformDistribution(0, n - 1);
-
-                cout << "current = " << i << " adj node = " << adj_node << " degree = " << degrees[adj_node] << endl;
-
                 if (i == adj_node || matrix[i][adj_node] || degrees[adj_node] == maxp)
                     continue;
                 
@@ -81,10 +96,6 @@ void generateNetwork() {
 
     } while (!checkConnected(matrix));
 
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cout << matrix[i][j] << "  ";
-        }
-        cout << endl;
-    }
+    showGraphDegrees(degrees);
+    initilializeNodeLinks(nodes, matrix);
 }
