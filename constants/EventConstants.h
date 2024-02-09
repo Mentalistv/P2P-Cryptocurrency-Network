@@ -1,0 +1,11 @@
+#ifndef EVENT_CONSTANTS_H
+#define EVENT_CONSTANTS_H    
+
+enum event_type{
+    GENERATE_TRANSACTION,
+    RECEIVE_TRANSACTION,
+    MINE_BLOCK,
+    RECEIVE_BLOCK
+};
+
+#endif
