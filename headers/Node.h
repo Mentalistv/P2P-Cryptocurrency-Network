@@ -11,11 +11,13 @@ using namespace std;
 
 class Node {
     public:
-        Node(string node_id, NodeType nt, NodeCPUType nct);
+        Node(int node_id, NodeType nt, NodeCPUType nct);
         
-        string id;
+        int id;
         NodeType node_type;
         NodeCPUType node_cpu_type;
+
+        vector<int> links;
 
         // attributes useful for simulation
         double hashing_power;

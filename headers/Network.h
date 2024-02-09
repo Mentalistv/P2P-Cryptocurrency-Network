@@ -1,5 +1,7 @@
+#include<vector>
+using namespace std;
+
 #include "../constants/SimulationParamenters.h"
+#include "./Node.h"
 
-void generateNetwork();
-
-void isNetworkConnected();
+void generateNetwork(vector<Node> &nodes);
