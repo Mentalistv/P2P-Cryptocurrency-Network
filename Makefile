@@ -15,15 +15,22 @@ SIMULATION_OBJ_FILES = Simulation.o
 MODEL_FILES = model/Event.cpp
 MODEL_OBJ_FILES = Event.o
 
+EVENT_FILES = events/ReceiveBlock.cpp
+EVENT_OBJ_FILES = ReceiveBlock.o
 
-compile_simulation: $(NODE_FILES) $(UTILITY_FILES) $(MODEL_FILES) Simulation.cpp
-	$(CC) $(CC_FLAGS) -c $(NODE_FILES) $(UTILITY_FILES) $(MODEL_FILES) Simulation.cpp 
+
+ALL_CPP_FILES = $(NODE_FILES) $(UTILITY_FILES) $(MODEL_FILES) $(EVENT_FILES) $(SIMULATION_FILES)
+ALL_OBJ_FILES = $(NODE_OBJ_FILES) $(UTILITY_OBJ_FILES) $(SIMULATION_OBJ_FILES) $(MODEL_OBJ_FILES) $(EVENT_OBJ_FILES)
+
+
+compile_simulation: $(ALL_CPP_FILES)
+	$(CC) $(CC_FLAGS) -c $(ALL_CPP_FILES) 
 
 simulation: compile_simulation
-	$(CC) $(CC_FLAGS) -o simulation $(NODE_OBJ_FILES) $(UTILITY_OBJ_FILES) $(SIMULATION_OBJ_FILES) $(MODEL_OBJ_FILES)
+	$(CC) $(CC_FLAGS) -o simulation $(ALL_OBJ_FILES) 
 
 clean:
-	rm -f $(NODE_OBJ_FILES) $(SIMULATION_OBJ_FILES) $(UTILITY_OBJ_FILES) $(MODEL_OBJ_FILES) simulation
+	rm -f $(ALL_OBJ_FILES) simulation
  
 
 

@@ -1,14 +1,12 @@
 #include <iostream>
 
-#include "Node.h"
-
 using namespace std;
 
 class Transaction
 {
     public:
-    Node* sender;
-    Node* receiver;
+    int sender;
+    int receiver;
     double amount;
     int TXNID;
     double time;

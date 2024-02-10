@@ -2,7 +2,6 @@
 #include<vector>
 #include<unordered_map>
 
-#include "Node.h"
 #include "Transaction.h"
 
 
@@ -14,13 +13,16 @@ using namespace std;
 
 class Block {
     public:
-        Block(string block_id, string ownr, string prev_blk_id, double time, vector <Transaction> i_txn, long h);
-        
-        string id;
-        string owner;
+        Block(int block_id, int owner_id, int prev_blk_id, double time, vector<Transaction> i_txn);
+        int id;
+        int owner_id;
+        int prev_block_id;
 
-        string prev_block_id;
+
         double timestamp;
-        vector <Transaction> included_txn;
-        long height;
+        vector <Transaction> transactions;
+        
+        
+        // for local storage at node
+        int height;
 };
