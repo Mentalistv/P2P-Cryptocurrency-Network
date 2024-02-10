@@ -1,3 +1,7 @@
 #include <random>
 
-int uniformDistribution(int min, int max);
+int uniformDistributionInt(int min, int max);
+
+double uniformDistributionDouble(int min, int max);
+
+double exponentialDistribution(double lambda);

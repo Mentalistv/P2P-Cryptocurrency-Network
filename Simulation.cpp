@@ -8,13 +8,14 @@
 
 using namespace std;
 
-vector<Node> nodes;
+vector<Node*> nodes;
 
 int main(int argc, char const *argv[]) {    
     int node_id = 0;
     for (int i = 0; i < NUMBER_OF_NODES; i++) {
         Node newnode(node_id++, NODE_FAST, NODE_CPU_FAST);
-        nodes.push_back(newnode);
+        nodes.push_back(&newnode);
+        
     }
 
     generateNetwork(nodes);
