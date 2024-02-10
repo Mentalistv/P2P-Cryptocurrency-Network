@@ -15,6 +15,19 @@ class Event{
     event_type type;
 
     double time;
+
+    virtual void processEvent() = 0;
+};
+
+class Compare {
+public:
+    bool operator()(Event a, Event b)
+    {
+        if (a.time < b.time) {
+            return true;
+        }
+        return false;
+    }
 };
 
 
