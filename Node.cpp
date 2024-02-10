@@ -1,8 +1,9 @@
 #include "headers/Node.h"
 
 
-Node::Node(int node_id, NodeType nt, NodeCPUType nct) {
-    id = node_id;
-    node_type = nt;
-    node_cpu_type = nct;
+Node::Node(int id, NodeType node_type, NodeCPUType node_cpu_type) {
+    this->id = id;
+    this->node_type = node_type;
+    this->node_cpu_type = node_cpu_type;
+    
 }

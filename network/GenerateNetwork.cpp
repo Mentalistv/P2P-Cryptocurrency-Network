@@ -49,18 +49,18 @@ void showGraphDegrees(vector<int> degrees) {
     cout << endl;
 }
 
-void initilializeNodeLinks(vector<Node> &nodes, vector<vector<bool>> &matrix) {
+void initilializeNodeLinks(vector<Node*> &nodes, vector<vector<bool>> &matrix) {
     for (int i = 0; i < matrix.size(); i++) {
         vector<int> links;
         for (int j = 0; j < matrix[0].size(); j++) {
             if (matrix[i][j])
                 links.push_back(j);
         }
-        nodes[i].links = links;
+        nodes[i]->links = links;
     }
 }
 
-void generateNetwork(vector<Node> &nodes) {
+void generateNetwork(vector<Node*> &nodes) {
     int n = NUMBER_OF_NODES;
     int maxp = MAX_PEERS_CONNECTED;
     int minp = MIN_PEERS_CONNECTED;
@@ -76,10 +76,10 @@ void generateNetwork(vector<Node> &nodes) {
             if (degrees[i] == maxp)
                 continue;
 
-            int more_needed =  uniformDistribution(minp, maxp) - degrees[i];
+            int more_needed =  uniformDistributionInt(minp, maxp) - degrees[i];
 
             while (more_needed > 0) {
-                int adj_node = uniformDistribution(0, n - 1);
+                int adj_node = uniformDistributionInt(0, n - 1);
                 if (i == adj_node || matrix[i][adj_node] || degrees[adj_node] == maxp)
                     continue;
                 
