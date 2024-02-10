@@ -1,11 +1,11 @@
-#include <iostream>
+#include "../headers/Event.h"
 
-#include "Node.h"
+class MineBlock : public Event {
+    int miner_id;
+    int prev_block_id;
 
-using namespace std;
+    MineBlock(vector<Node> &nodes, double time, event_type type, int miner_id) : Event(nodes, time, type), miner_id(miner_id), prev_block_id(prev_block_id){}
 
-class GenerateTransaction
-{
-private:
-    long tnx_ID;
+    void processEvent() override;
+
 };
