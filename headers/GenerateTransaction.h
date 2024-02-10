@@ -22,7 +22,7 @@ public:
     void processEvent() override;
     
     // ------------------------------------------------------------------------------------------------ 
-    //this function creates transaction object, add it to generator node's and adjust the balance 
+    //this function creates transaction object and add it to generator node's transaction pool 
     //-------------------------------------------------------------------------------------------------
     Transaction generate();
 

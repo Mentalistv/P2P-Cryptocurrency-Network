@@ -31,6 +31,6 @@ class Node {
         // attributes useful for simulation
         double hashing_power;
 
-        unordered_map<long, Transaction*> transaction_pool; 
+        unordered_map<long, Transaction> transaction_pool; 
         
 };

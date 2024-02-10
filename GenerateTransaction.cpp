@@ -14,7 +14,7 @@ void GenerateTransaction::processEvent(){
 }
 
 // ------------------------------------------------------------------------------------------------
-// this function creates transaction object, add it to generator node's and adjust the balance
+// this function creates transaction objectand add it to generator node's transaction pool
 //-------------------------------------------------------------------------------------------------
 Transaction GenerateTransaction::generate()
 {
@@ -32,20 +32,17 @@ Transaction GenerateTransaction::generate()
     int upper_bound_id = NUMBER_OF_NODES;
     receiver_ID = generator->id;
     while (receiver_ID == generator->id)
-    { // ensure randomly generated "id" is not equal to the generator's id
+    { 
+        // ensure randomly generated "id" is not equal to the generator's id
         receiver_ID = uniformDistributionInt(lower_bound_id, upper_bound_id);
     }
 
     // create object of Transaction
     Transaction txn(generator->id, receiver_ID, amount, txn_ID, time);
 
-    // TO BE EDITED
-    //____________________________________________________
-    //
-    //    Update transaction pool and balance
-    generator->transaction_pool[txn_ID] = &txn;
-    //____________________________________________________
-
+    // Update transaction pool and balance
+    generator->transaction_pool[txn_ID] = txn;
+    
     return txn;
 }
 
@@ -75,18 +72,22 @@ void GenerateTransaction::transmit(Transaction txn)
             capacity = 100;
         }
 
-        // 2. Size of transaction to be transmitted in bits
+        // 2. Size of transaction to be transmitted (in bits)
         int size_of_txn = 1024*8; // 1KB
 
-        // 3. Generate queuing delay from exponential distribution
+        // 3. Generate queuing delay from exponential distribution (in ms)
         double queue_delay;
-        double lambda = 96 * 1000 / capacity;
-        queue_delay = exponentialDistribution(lambda);
+        double mean = 96 / capacity;
+        queue_delay = exponentialDistribution(1 / mean);
         
         // 4. Compute latency
-        double latency = size_of_txn/capacity + queue_delay; // + light_speed_delay
+        double latency = size_of_txn / (capacity * 1000) + queue_delay + LIGHT_SPEED_DELAY; 
 
+        
+        
         ReceiveTransaction rb(neighbour, generator, txn, nodes, type, time);
+
+        // TODO : Push Receive Transaction event in event queue
         
     }
 }
@@ -97,6 +98,7 @@ void GenerateTransaction::initializeNextTransaction(long txn_ID)
 
     // after a delay this node again generates a new transaction
     double delay;
+    delay = exponentialDistribution(1.0 / TRANSACTION_INTERARRIVAL_MEAN);
     GenerateTransaction gt(generator, txn_ID, nodes, type, delay);
-    // ---> event_queue.push(&gt)
+    // TODO---> event_queue.push(&gt)
 }

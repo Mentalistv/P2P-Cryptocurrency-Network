@@ -9,16 +9,16 @@ using namespace std;
 class Link
 {
 public:
-    Node *node_1;
-    Node *node_2;
+    int node_1_ID;
+    int node_2_ID;
     double capacity;
     double light_speed;
 
-    Link(Node *node_1, Node *node_2);
+    Link(int node_1_ID, int node_2_ID);
 
     // ------------------- Function to get latency between two nodes of a link ----------------------------
-    double get_latency(string message);
+    double getLatency(string message);
 
     // ------------------ Function to get adjacent node from a given node of the link ------------------------
-    Node* get_adjacent_node(Node *node);
+    int getAdjacentNode(int node_ID);
 };

@@ -11,15 +11,24 @@ using namespace std;
 class ReceiveTransaction : public Event
 {
 public:
-    Node* Receiver;
-    Node* Sender;
+    Node* receiver;
+    Node* sender;
     Transaction txn;
 
+    ReceiveTransaction(Node* receiver, Node* sender, Transaction txn, vector<Node*> &nodes, event_type type, double time);
+    
+    //
     void processEvent() override;
     
-    ReceiveTransaction(Node* Receiver, Node* Sender, Transaction txn, vector<Node*> &nodes, event_type, double time);
 
-    void receive();
+    // ----------------------------- This funtiom receives transation and updates Node's local data --------------------------
+    int receive();
+
+    // ------------------------------------------------------------------------------------------------
+    // This function will check all the neighbours of the transmitter,(exclude the sender)
+    // compute latency delay for each,
+    // and push "ReceiveTransaction" event in the event queue 
+    // ------------------------------------------------------------------------------------------------
     void transmit();
 
 };
