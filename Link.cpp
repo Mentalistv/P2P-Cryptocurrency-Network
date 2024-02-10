@@ -20,12 +20,12 @@ Link::Link(Node *node_1, Node *node_2)
     double lower_bound = 10.0;
     double upper_bound = 500.0;
 
-    std::uniform_real_distribution<double> distribution(lower_bound, upper_bound);
-    light_speed = distribution(gen);
+    uniform_real_distribution<double> uni_dist(lower_bound, upper_bound);
+    light_speed = uni_dist(gen);
 }
 
 // ------------------- Function to get latency between two nodes of a link ----------------------------
-double Link::get_latency(string message)
+double Link::getLatency(string message)
 {
     // get size of message in bits
     int msg_size = sizeof(message) * 8;
@@ -41,7 +41,7 @@ double Link::get_latency(string message)
 }
 
 // ------------------ Function to get adjacent node from a given node of the link --------------------------
-Node *Link::get_adjacent_node(Node *node)
+Node *Link::getAdjacentNode(Node *node)
 {
     return node == node_1 ? node_2 : node_1;
 }
