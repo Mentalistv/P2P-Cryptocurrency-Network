@@ -13,8 +13,9 @@ public:
     double amount;
     double time;
 
-    static long txn_count;
 
+    inline static long txn_count;
+    
     Transaction();
 
     Transaction(int sender, int receiver, double amount, double time);

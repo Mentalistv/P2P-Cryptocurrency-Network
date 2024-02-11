@@ -1,13 +1,7 @@
-#include "headers/ReceiveTransaction.h"
+#include "../headers/Event.h"
+#include "../headers/Globals.h"
 
-ReceiveTransaction::ReceiveTransaction(Node* receiver, Node* sender, Transaction txn, vector<Node*> &nodes, event_type type, double time){
-    this->receiver = receiver;
-    this->sender = sender;
-    this->txn = txn;
-    this->nodes = nodes;
-    this->type = type;
-    this->time = time;
-}
+priority_queue<Event, vector<Event>, EventComparator> eventQueue;
 
 void ReceiveTransaction::processEvent(){
 
@@ -80,8 +74,7 @@ void ReceiveTransaction::transmit(){
         
         ReceiveTransaction rb(neighbour, receiver, txn, nodes, type, time);
 
-        // TODO : Push Receive Transaction event in event queue
-        
+        eventQueue.push(rb);
     }
 }
 

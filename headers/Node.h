@@ -3,10 +3,7 @@
 #include <unordered_map> 
 
 #include "../constants/NodeConstants.h"
-#include "Transaction.h"
-
 #include "../headers/Block.h"
-#include "../constants/NodeConstants.h"
 
 #ifndef NODE_H
 #define NODE_H
@@ -32,5 +29,12 @@ class Node {
         double hashing_power;
 
         unordered_map<long, Transaction> transaction_pool; 
+
+        vector<double> calculateBalancesFromBlock(int block_id);
+
+        double calculateLatencyToNode(Node* node, int message_size);
+
+        // create a new block to add over the longest chain
+        Block createNewBlock();
         
 };

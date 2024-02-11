@@ -1,4 +1,4 @@
-#include "../headers/MineBlock.h"
+#include "../headers/Event.h"
 
 void MineBlock::processEvent() {
     // Node *miner = &nodes[miner_id];

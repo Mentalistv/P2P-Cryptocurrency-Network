@@ -11,4 +11,10 @@ const int LIGHT_SPEED_DELAY = 20; //TODO : to be taken from uniform districution
 
 const double TRANSACTION_INTERARRIVAL_MEAN = 5000;
 
+const int INITIAL_BALANCE = 101;
+
+const int TRANSACTION_SIZE_BYTES = 1024;
+
+const int BLOCK_INTERARRIVAL_TIME = 600000;
+
 #endif // NODE_CONSTANTS_H

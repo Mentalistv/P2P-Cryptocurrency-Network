@@ -8,3 +8,7 @@ Block::Block(int block_id, int owner_id, int prev_blk_id, double time, vector<Tr
     this->timestamp = time;
     this->transactions = i_txn;
 }
+
+Block::Block() {
+    // default constructor
+}

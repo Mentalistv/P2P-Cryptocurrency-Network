@@ -1,14 +1,7 @@
-#include "headers/GenerateTransaction.h"
+#include "../headers/Event.h"
+#include "../headers/Globals.h"
 
-GenerateTransaction::GenerateTransaction(Node *generator, vector<Node *> &nodes, event_type type, double time)
-{
-    this->generator = generator;
-    this->time = time;
-    this->nodes = nodes;
-    this->type = type;
-    this->time = time;
-    
-}
+priority_queue<Event, vector<Event>, EventComparator> eventQueue;
 
 
 void GenerateTransaction::processEvent(){
@@ -64,34 +57,13 @@ void GenerateTransaction::transmit(Transaction txn)
         int neighbour_id = generator->links.at(i);
         Node *neighbour = nodes.at(neighbour_id);
 
-        // -------------------------- Calculate latency ---------------------------------
-        // 1. Calculate capacity
-        double capacity;
-        if (generator->node_type == NODE_SLOW || neighbour->node_type == NODE_SLOW)
-        {
-            capacity = 5;
-        }
-        else
-        {
-            capacity = 100;
-        }
-
-        // 2. Size of transaction to be transmitted (in bits)
-        int size_of_txn = 1024*8; // 1KB
-
-        // 3. Generate queuing delay from exponential distribution (in ms)
-        double queue_delay;
-        double mean = 96 / capacity;
-        queue_delay = exponentialDistribution(1 / mean);
-        
-        // 4. Compute latency
-        double latency = size_of_txn / (capacity * 1000) + queue_delay + LIGHT_SPEED_DELAY; 
-
+        // // -------------------------- Calculate latency ---------------------------------
+        double latency = generator->calculateLatencyToNode(neighbour, TRANSACTION_SIZE_BYTES);
         
         
-        ReceiveTransaction rb(neighbour, generator, txn, nodes, type, time);
+        ReceiveTransaction rb(neighbour, generator, txn, nodes, type, time + latency);
 
-        // TODO : Push Receive Transaction event in event queue
+        eventQueue.push(rb);
         
     }
 }
@@ -104,6 +76,6 @@ void GenerateTransaction::initializeNextTransaction()
     double delay;
     delay = exponentialDistribution(1.0 / TRANSACTION_INTERARRIVAL_MEAN);
     
-    GenerateTransaction gt(generator, nodes, type, delay);
-    // TODO---> event_queue.push(&gt)
+    GenerateTransaction gt(generator, nodes, type, time + delay);
+    eventQueue.push(gt);
 }
