@@ -4,14 +4,21 @@ using namespace std;
 
 class Transaction
 {
-    public:
+private:
+    long txn_ID;
+
+public:
     int sender;
     int receiver;
     double amount;
-    long txn_ID;
     double time;
 
+    static long txn_count;
+
     Transaction();
-    Transaction(int sender, int receiver, double amount, long txn_ID, double time);
-    string get_transaction_string_format();
+
+    Transaction(int sender, int receiver, double amount, double time);
+
+    long getTxnID();
+
 };

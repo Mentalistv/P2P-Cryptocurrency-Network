@@ -2,8 +2,6 @@
 
 #include "Utility.h"
 #include "Event.h"
-#include "Node.h"
-#include "Transaction.h"
 #include "../constants/SimulationParamenters.h"
 
 using namespace std;

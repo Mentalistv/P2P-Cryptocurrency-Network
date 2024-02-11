@@ -1,9 +1,6 @@
 #include <iostream>
 
-#include "Utility.h"
 #include "Event.h"
-#include "Node.h"
-#include "Transaction.h"
 #include "ReceiveTransaction.h"
 #include "../constants/SimulationParamenters.h"
 using namespace std;
@@ -13,11 +10,9 @@ class GenerateTransaction : public Event
 
 public:
     Node *generator;
-    long txn_ID;
 
-    GenerateTransaction(Node *generator, long txn_ID, vector<Node*> &nodes, event_type type, double time);
+    GenerateTransaction(Node *generator, vector<Node*> &nodes, event_type type, double time);
 
-    
     //
     void processEvent() override;
     
@@ -35,5 +30,5 @@ public:
     void transmit(Transaction txn);
 
     // -------------------- Generate next transaction after some delay ---------------------------------- 
-    void initializeNextTransaction(long txn_ID);
+    void initializeNextTransaction();
 };
