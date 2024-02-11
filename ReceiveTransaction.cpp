@@ -24,11 +24,11 @@ void ReceiveTransaction::processEvent(){
 int ReceiveTransaction::receive(){
     
     // add transaction to the transaction pool if it does not already exists
-    if(receiver->transaction_pool.count(txn.txn_ID)){
+    if(receiver->transaction_pool.count(txn.getTxnID())){
         return 1;
     }
     else{
-        receiver->transaction_pool[txn.txn_ID] = txn;
+        receiver->transaction_pool[txn.getTxnID()] = txn;
         return 0;
     }
 

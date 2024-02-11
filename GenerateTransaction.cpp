@@ -1,16 +1,20 @@
 #include "headers/GenerateTransaction.h"
 
-GenerateTransaction::GenerateTransaction(Node *generator, long txn_ID, vector<Node *> &nodes, event_type type, double time)
+GenerateTransaction::GenerateTransaction(Node *generator, vector<Node *> &nodes, event_type type, double time)
 {
     this->generator = generator;
-    this->txn_ID = txn_ID;
     this->time = time;
+    this->nodes = nodes;
+    this->type = type;
+    this->time = time;
+    
 }
 
 
 void GenerateTransaction::processEvent(){
     Transaction txn = generate();
     transmit(txn);
+    initializeNextTransaction();
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -38,10 +42,10 @@ Transaction GenerateTransaction::generate()
     }
 
     // create object of Transaction
-    Transaction txn(generator->id, receiver_ID, amount, txn_ID, time);
+    Transaction txn(generator->id, receiver_ID, amount, time);
 
     // Update transaction pool and balance
-    generator->transaction_pool[txn_ID] = txn;
+    generator->transaction_pool[txn.getTxnID()] = txn;
     
     return txn;
 }
@@ -93,12 +97,13 @@ void GenerateTransaction::transmit(Transaction txn)
 }
 
 // -------------------- Generate next transaction after some delay ----------------------------------
-void GenerateTransaction::initializeNextTransaction(long txn_ID)
+void GenerateTransaction::initializeNextTransaction()
 {
 
     // after a delay this node again generates a new transaction
     double delay;
     delay = exponentialDistribution(1.0 / TRANSACTION_INTERARRIVAL_MEAN);
-    GenerateTransaction gt(generator, txn_ID, nodes, type, delay);
+    
+    GenerateTransaction gt(generator, nodes, type, delay);
     // TODO---> event_queue.push(&gt)
 }
