@@ -8,6 +8,8 @@ Node::Node(int id, NodeType node_type, NodeCPUType node_cpu_type) {
     this->node_type = node_type;
     this->node_cpu_type = node_cpu_type;
 
+    deepest_block_id = GENESIS_BLOCK_ID;
+
 
     blocks[GENESIS_BLOCK_ID] = Block(GENESIS_BLOCK_ID, id, NO_PREVIOUS_BLOCK, 0, {});   
 }
@@ -15,16 +17,29 @@ Node::Node(int id, NodeType node_type, NodeCPUType node_cpu_type) {
 vector<double> Node::calculateBalancesFromBlock(int block_id) {
     int temp_id = block_id;
 
-    vector<double> balances;
+    vector<double> balances(NUMBER_OF_NODES, 0);
 
-    while(blocks[temp_id].prev_block_id != -1) {
+    // cout << " no of blocks " << blocks.size() << " block id " << block_id << endl;
+
+    while(blocks[temp_id].prev_block_id != GENESIS_BLOCK_ID && blocks[temp_id].id != GENESIS_BLOCK_ID) {
         vector<Transaction> transactions = blocks[temp_id].transactions;
 
         for (Transaction txn: transactions) {
             balances[txn.sender] -= txn.amount;
             balances[txn.receiver] += txn.amount;
         }
+
+        // cout << "here " << blocks[temp_id].id << " " << blocks[temp_id].prev_block_id << endl;
+        temp_id = blocks[temp_id].prev_block_id;
+
     }
+
+    for (int i = 0; i < balances.size(); i++) {
+        balances[i] += INITIAL_BALANCE;
+        cout << balances[i] << " ";
+    }
+
+    cout << endl;
 
     return balances;
 }
@@ -53,7 +68,7 @@ double Node::calculateLatencyToNode(Node* neighbour, int message_size_bytes) {
         // 4. Compute latency
         double latency = size_of_txn / (capacity * 1000) + queue_delay + LIGHT_SPEED_DELAY;
 
-        return latency; 
+        return latency/1000; 
 }
 
 int Node::getTransactionPoolSize() {

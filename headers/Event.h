@@ -32,7 +32,7 @@ struct EventComparator {
 class MineBlock : public Event {
     public:
     int miner_id;
-    int prev_block_id;
+    int mine_on_block_id;
 
     MineBlock(double time, event_type type, int miner_id, int mine_on_block_id);
     virtual ~MineBlock();
@@ -42,7 +42,7 @@ class MineBlock : public Event {
 
     void transmitBlock(Block block) const;
 
-    double getPoWDelay() const;
+    long double getPoWDelay() const;
 };
 
 

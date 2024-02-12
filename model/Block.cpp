@@ -1,4 +1,5 @@
 #include "../headers/Block.h"
+#include "../constants/SimulationParameters.h"
 
 
 Block::Block(int block_id, int owner_id, int prev_blk_id, double time, vector<Transaction> i_txn) {
@@ -11,4 +12,8 @@ Block::Block(int block_id, int owner_id, int prev_blk_id, double time, vector<Tr
 
 Block::Block() {
     // default constructor
+}
+
+int Block::getMessageSizeBytes() const {
+    return transactions.size() * TRANSACTION_SIZE_BYTES;
 }

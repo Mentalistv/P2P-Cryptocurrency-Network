@@ -3,7 +3,7 @@
 
 
 ReceiveTransaction::ReceiveTransaction(
-    Node* receiver, Node* sender, Transaction txn, event_type type, double time
+    Node* receiver, Node* sender, Transaction txn, event_type type,  double time
 ) : Event(time, type), receiver(receiver), sender(sender), txn(txn) {}
 
 ReceiveTransaction::~ReceiveTransaction() {}
@@ -51,27 +51,7 @@ void ReceiveTransaction::transmit() const {
 
         
         // -------------------------- Calculate latency ---------------------------------
-        // 1. Calculate capacity (in Mbps)
-        double capacity;
-        if (receiver->node_type == NODE_SLOW || neighbour->node_type == NODE_SLOW)
-        {
-            capacity = 5;
-        }
-        else
-        {
-            capacity = 100;
-        }
-
-        // 2. Size of transReceiveTransaction(Node* receiver, Node* sender, Transaction txn, vector<Node*> &nodes, event_type type, double time, EventQueue& event_queue) : Event(nodes, time, type), receiver(receiver), sender(sender), txn(txn) {}action to be transmitted (in bits)
-        int size_of_txn = 1024*8; // 1KB
-
-        // 3. Generate queuing delay from exponential distribution (in ms)
-        double queue_delay;
-        double mean = 96 / capacity;
-        queue_delay = exponentialDistribution(1 / mean);
-        
-        // 4. Compute latency
-        double latency = size_of_txn / (capacity * 1000) + queue_delay + LIGHT_SPEED_DELAY; 
+        double latency = receiver->calculateLatencyToNode(neighbour, 1024);
         
         ReceiveTransaction rb(neighbour, receiver, txn, type, time);
 

@@ -44,12 +44,13 @@ void ReceiveBlock::updateTransactionPool() const {
 }
 
 void ReceiveBlock::processEvent() const {
-    cout << "Inside ReceiveBlock event at time " << time << endl;
+    cout << "Inside ReceiveBlock event at time " << time << " for receiver " << receiver_id << endl;
     receiveBlock();
 }
 
 void ReceiveBlock::receiveBlock() const {
     Node *receiver = nodes[receiver_id];
+
 
     // if the block is already present, then return
     if (receiver->blocks.find(incoming_block.id) != receiver->blocks.end())
@@ -59,6 +60,7 @@ void ReceiveBlock::receiveBlock() const {
 
     if (!verifyBlock())
         return;
+    cout << "inc block id " << incoming_block.id << endl;
     
     // Add the block to the tree
     int prev_height = receiver->blocks[prev_block_id].height;
@@ -74,16 +76,15 @@ void ReceiveBlock::receiveBlock() const {
         // // remove the txns in the block from the receiver's TXN pool
         // updateTransactionPool();
 
-        
-        double delay = 13; // TODO: Mine block delay
-
-        event_queue.push(new MineBlock(time + delay, MINE_BLOCK, receiver_id, incoming_block.id));
+        event_queue.push(new MineBlock(time, MINE_BLOCK, receiver_id, incoming_block.id));
     }
 
     // Add receive block events to transmit the received block
     for (int neighbour_id: receiver->links) {
         if (neighbour_id != sender_id) {
-            double latency = 13; //TODO
+            Node *neighbour = nodes.at(neighbour_id);
+            int message_size_bytes = incoming_block.getMessageSizeBytes();
+            double latency = receiver->calculateLatencyToNode(neighbour, message_size_bytes); //TODO
             event_queue.push(new ReceiveBlock(time + latency, RECEIVE_BLOCK, neighbour_id, receiver_id, incoming_block));
         }       
     }

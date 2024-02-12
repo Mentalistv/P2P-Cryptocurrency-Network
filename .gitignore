@@ -1,3 +1,4 @@
 *.o
 simulation
 settings.json
+.vscode

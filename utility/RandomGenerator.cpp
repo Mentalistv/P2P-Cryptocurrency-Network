@@ -1,6 +1,8 @@
 #include "../headers/Utility.h"
 #include "../constants/SimulationParameters.h"
 
+#include <iostream>
+
 using namespace std;
 
 int uniformDistributionInt(int min, int max) {
@@ -19,10 +21,20 @@ double uniformDistributionDouble(double min, double max) {
     return random_double;
 }
 
-double exponentialDistribution(double lambda){
+double exponentialDistribution(double mean){
     random_device rd;
     mt19937 gen(rd());
-    exponential_distribution<double> expt_dist(lambda);
-    double random = expt_dist(gen);
+    double lambda = 1.0/mean;
+    exponential_distribution<double> distribution(lambda);
+    double random = distribution(gen);
+    return random;
+}
+
+long double exponentialDistributionLongDouble(double mean){
+    random_device rd;
+    mt19937 gen(rd());
+    double lambda = 1.0/mean;
+    exponential_distribution<long double> distribution(lambda);
+    double random = distribution(gen);
     return random;
 }
