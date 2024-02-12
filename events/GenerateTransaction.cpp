@@ -72,7 +72,7 @@ void GenerateTransaction::initializeNextTransaction() const
 {
     // after a delay this node again generates a new transaction
     double delay;
-    delay = exponentialDistribution(1.0 * NUMBER_OF_NODES / TRANSACTION_INTERARRIVAL_MEAN);
+    delay = exponentialDistribution(TRANSACTION_INTERARRIVAL_MEAN/(1.0*NUMBER_OF_NODES));
     
     event_queue.push(new GenerateTransaction(generator, type, time + delay));
 

@@ -6,7 +6,6 @@ MineBlock::MineBlock(
 ) : Event(time, type), miner_id(miner_id), mine_on_block_id(mine_on_block_id){
     // calculating and adding delay here
     long double delay = getPoWDelay();
-    cout << "adding delay of " << delay << endl;
     this->time = time + delay;
 }
 
@@ -70,7 +69,7 @@ void MineBlock::transmitBlock(Block block) const {
     Node* miner = nodes[miner_id];
 
     for (int neighbour_id: miner->links) {
-        
+
         double delay = 13; //TODO
         event_queue.push(new ReceiveBlock(time + delay, RECEIVE_BLOCK, neighbour_id, miner_id, block));
     }

@@ -49,13 +49,10 @@ void ReceiveTransaction::transmit() const {
         }
         Node *neighbour = nodes.at(neighbour_id);
 
-        
         // -------------------------- Calculate latency ---------------------------------
         double latency = receiver->calculateLatencyToNode(neighbour, 1024);
-        
-        ReceiveTransaction rb(neighbour, receiver, txn, type, time);
 
-        // event_queue.push(&rb);
+        event_queue.push(new ReceiveTransaction(neighbour, receiver, txn, type, time + latency));
     }
 }
 

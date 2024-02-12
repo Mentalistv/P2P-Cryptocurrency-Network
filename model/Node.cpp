@@ -57,13 +57,15 @@ double Node::calculateLatencyToNode(Node* neighbour, int message_size_bytes) {
             capacity = 100;
         }
 
+        // cout << "capacity " << capacity << endl; 
+
         // 2. Size of transaction to be transmitted (in bits)
         int size_of_txn = message_size_bytes*8; // 1KB
 
         // 3. Generate queuing delay from exponential distribution (in ms)
         double queue_delay;
         double mean = 96 / capacity;
-        queue_delay = exponentialDistribution(1 / mean);
+        queue_delay = exponentialDistribution(mean);
         
         // 4. Compute latency
         double latency = size_of_txn / (capacity * 1000) + queue_delay + LIGHT_SPEED_DELAY;
