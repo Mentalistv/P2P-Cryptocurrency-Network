@@ -5,8 +5,8 @@ INCLUDE_DIR = headers
 CC = g++
 CC_FLAGS=-w -I $(INCLUDE_DIR)
 
-NODE_FILES= Node.cpp network/GenerateNetwork.cpp
-NODE_OBJ_FILES= Node.o GenerateNetwork.o
+NODE_FILES= network/GenerateNetwork.cpp
+NODE_OBJ_FILES= GenerateNetwork.o
 
 UTILITY_FILES= utility/RandomGenerator.cpp
 UTILITY_OBJ_FILES= RandomGenerator.o
@@ -14,11 +14,11 @@ UTILITY_OBJ_FILES= RandomGenerator.o
 SIMULATION_FILES = Simulation.cpp
 SIMULATION_OBJ_FILES = Simulation.o
 
-MODEL_FILES = model/Block.cpp model/Transaction.cpp
-MODEL_OBJ_FILES = Block.o Transaction.o
+MODEL_FILES = model/Block.cpp model/Transaction.cpp model/Node.cpp
+MODEL_OBJ_FILES = Block.o Transaction.o Node.o
 
-EVENT_FILES = events/ReceiveBlock.cpp events/GenerateTransaction.cpp events/ReceiveTransaction.cpp
-EVENT_OBJ_FILES = ReceiveBlock.o GenerateTransaction.o ReceiveTransaction.o
+EVENT_FILES = events/ReceiveBlock.cpp events/GenerateTransaction.cpp events/ReceiveTransaction.cpp events/Event.cpp events/MineBlock.cpp
+EVENT_OBJ_FILES = ReceiveBlock.o GenerateTransaction.o ReceiveTransaction.o Event.o MineBlock.o
 
 
 ALL_CPP_FILES = $(NODE_FILES) $(UTILITY_FILES) $(MODEL_FILES) $(EVENT_FILES) $(SIMULATION_FILES)

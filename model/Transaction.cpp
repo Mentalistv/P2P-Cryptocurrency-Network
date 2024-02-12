@@ -12,7 +12,3 @@ Transaction::Transaction(int sender, int receiver, double amount, double time){
 
     this->txn_ID = this->txn_count++;
 }
-
-long Transaction::getTxnID(){
-    return txn_ID;
-}

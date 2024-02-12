@@ -1,11 +1,16 @@
 #include "../headers/Event.h"
 #include "../headers/Globals.h"
 
-priority_queue<Event, vector<Event>, EventComparator> eventQueue;
 
+
+ReceiveBlock::ReceiveBlock(
+    double time, event_type type, int receiver_id, int sender_id, Block incoming_block
+) : Event(time, type), receiver_id(receiver_id), incoming_block(incoming_block) {}
+
+ReceiveBlock::~ReceiveBlock() {}
 
 // TODO: Optkize if possible, maintain the blances for longest chain, update it if the longest chain changes 
-bool ReceiveBlock::verifyBlock() {
+bool ReceiveBlock::verifyBlock() const {
     Node *receiver = nodes[receiver_id];
     int prev_block_id = incoming_block.prev_block_id;
     // Verify transactions in the block
@@ -28,20 +33,21 @@ bool ReceiveBlock::verifyBlock() {
 }
 
 
-void ReceiveBlock::updateTransactionPool() {
+void ReceiveBlock::updateTransactionPool() const {
     Node *receiver = nodes[receiver_id];
 
     for (Transaction txn: incoming_block.transactions) {
-        if (receiver->transaction_pool.find(txn.getTxnID()) != receiver->transaction_pool.end())
-            receiver->transaction_pool.erase(txn.getTxnID());
+        if (receiver->transaction_pool.find(txn.txn_ID) != receiver->transaction_pool.end())
+            receiver->transaction_pool.erase(txn.txn_ID);
     }
 }
 
-void ReceiveBlock::processEvent() {
+void ReceiveBlock::processEvent() const {
+    cout << "Inside ReceiveBlock event at time " << time << endl;
     receiveBlock();
 }
 
-void ReceiveBlock::receiveBlock() {
+void ReceiveBlock::receiveBlock() const {
     Node *receiver = nodes[receiver_id];
 
     // if the block is already present, then return
@@ -70,16 +76,14 @@ void ReceiveBlock::receiveBlock() {
         
         double delay = 13; // TODO: Mine block delay
 
-        MineBlock mb(nodes, time + delay, MINE_BLOCK, receiver_id, incoming_block.id);
-        eventQueue.push(mb);
+        event_queue.push(new MineBlock(time + delay, MINE_BLOCK, receiver_id, incoming_block.id));
     }
 
     // Add receive block events to transmit the received block
     for (int neighbour_id: receiver->links) {
         if (neighbour_id != sender_id) {
             double latency = 13; //TODO
-            ReceiveBlock newRcvBlkEvent(nodes, time + latency, RECEIVE_BLOCK, neighbour_id, receiver_id, incoming_block);
-            eventQueue.push(newRcvBlkEvent);
+            event_queue.push(new ReceiveBlock(time + latency, RECEIVE_BLOCK, neighbour_id, receiver_id, incoming_block));
         }       
     }
 

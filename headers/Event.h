@@ -14,37 +14,31 @@ using namespace std;
 
 class Event{
     public:
-    typedef priority_queue<Event> EventQueue;
-    Event();
-    Event(vector<Node*> nodes, double time, event_type type, EventQueue event_queue) : nodes(nodes), time(time), type(type), event_queue(event_queue) {}
+        Event(double time, event_type type);
+        virtual ~Event();
+        event_type type;
 
-    vector<Node*> nodes;
-    event_type type;
-    priority_queue<Event> event_queue;
-
-    double time;
+        virtual void processEvent() const;
+        
+        double time;
 };
 
-
-class EventComparator {
-public:
-    bool operator()(Event& a, Event& b)
-    {
-        if (a.time < b.time) {
-            return true;
-        }
-        return false;
-    }
+// Custom comparator for priority_queue
+struct EventComparator {
+    bool operator()(const Event* event1, const Event* event2) const;
 };
+
 
 class MineBlock : public Event {
     public:
     int miner_id;
     int prev_block_id;
 
-    MineBlock(vector<Node*> &nodes, double time, event_type type, int miner_id, int mine_on_block_id) : Event(nodes, time, type), miner_id(miner_id), prev_block_id(prev_block_id){}
+    MineBlock(double time, event_type type, int miner_id, int mine_on_block_id);
+    virtual ~MineBlock();
 
-    void processEvent();
+
+    void processEvent() const override;
 
 };
 
@@ -55,16 +49,16 @@ class ReceiveBlock : public Event {
     Block incoming_block;
     int sender_id;
 
-    ReceiveBlock();
-    ReceiveBlock(vector<Node*> &nodes, double time, event_type type, int receiver_id, int sender_id, Block incoming_block) : Event(nodes, time, type), receiver_id(receiver_id), incoming_block(incoming_block) {}
+    ReceiveBlock(double time, event_type type, int receiver_id, int sender_id, Block incoming_block);
 
-    void processEvent();
-    
+    virtual ~ReceiveBlock();
+
+    void processEvent() const override;
 
     private:
-        bool verifyBlock();
-        void updateTransactionPool();
-        void receiveBlock();
+        bool verifyBlock() const;
+        void updateTransactionPool() const;
+        void receiveBlock() const;
 
 };
 
@@ -74,23 +68,26 @@ class ReceiveTransaction : public Event
 public:
     Node* receiver;
     Node* sender;
-    Transaction txn;
+    const Transaction txn;
 
-    ReceiveTransaction(Node* receiver, Node* sender, Transaction txn, vector<Node*> &nodes, event_type type, double time) : Event(nodes, time, type), receiver(receiver), sender(sender), txn(txn) {}
+    ReceiveTransaction(
+        Node* receiver, Node* sender, Transaction txn, event_type type, double time
+    );
+
+    virtual ~ReceiveTransaction();
     
     //
-    void processEvent();
-    
+    void processEvent() const override;
 
     // ----------------------------- This funtiom receives transation and updates Node's local data --------------------------
-    int receive();
+    int receive() const;
 
     // ------------------------------------------------------------------------------------------------
     // This function will check all the neighbours of the transmitter,(exclude the sender)
     // compute latency delay for each,
     // and push "ReceiveTransaction" event in the event queue 
     // ------------------------------------------------------------------------------------------------
-    void transmit();
+    void transmit() const;
 
 };
 
@@ -101,15 +98,16 @@ class GenerateTransaction : public Event
 public:
     Node *generator;
 
-    GenerateTransaction(Node *generator, vector<Node*> &nodes, event_type type, double time) : Event (nodes, time, type), generator(generator) {}
+    GenerateTransaction(Node *generator, event_type type, double time);
+    virtual ~GenerateTransaction();
 
     //
-    void processEvent();
+    void processEvent() const override;
     
     // ------------------------------------------------------------------------------------------------ 
     //this function creates transaction object and add it to generator node's transaction pool 
     //-------------------------------------------------------------------------------------------------
-    Transaction generate();
+    Transaction generate() const;
 
 
     // ------------------------------------------------------------------------------------------------
@@ -117,10 +115,10 @@ public:
     // compute latency delay for each 
     // and push "ReceiveTransaction" event in the event queue 
     // ------------------------------------------------------------------------------------------------
-    void transmit(Transaction txn);
+    void transmit(Transaction txn) const;
 
     // -------------------- Generate next transaction after some delay ---------------------------------- 
-    void initializeNextTransaction();
+    void initializeNextTransaction() const;
 };
 
 #endif

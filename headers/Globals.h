@@ -3,6 +3,8 @@
 
 #include "./Event.h"
 
-extern priority_queue<Event, vector<Event>, EventComparator> eventQueue; // Declaration
+extern vector<Node*> nodes;
+
+extern priority_queue<Event*, vector<Event*>, EventComparator> event_queue; // Declaration
 
 #endif

@@ -1,5 +1,15 @@
 #include "../headers/Event.h"
 
-Event::Event() {
-    // default constructor
+using namespace std;
+
+Event::Event(double time, event_type type) : time(time), type(type) {}
+
+Event::~Event() {}
+
+void Event::processEvent() const {
+    cout << "Processing generic Event: " << endl;
+}
+
+bool EventComparator::operator()(const Event* event1, const Event* event2) const {
+    return event1->time > event2->time;
 }

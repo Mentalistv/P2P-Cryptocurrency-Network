@@ -1,6 +1,6 @@
-#include "headers/Node.h"
-#include "headers/Utility.h"
-#include "./constants/SimulationParameters.h"
+#include "../headers/Node.h"
+#include "../headers/Utility.h"
+#include "../constants/SimulationParameters.h"
 
 
 Node::Node(int id, NodeType node_type, NodeCPUType node_cpu_type) {
@@ -9,8 +9,7 @@ Node::Node(int id, NodeType node_type, NodeCPUType node_cpu_type) {
     this->node_cpu_type = node_cpu_type;
 
 
-    blocks[GENESIS_BLOCK_ID] = Block(GENESIS_BLOCK_ID, id, NO_PREVIOUS_BLOCK, 0, {});
-    
+    blocks[GENESIS_BLOCK_ID] = Block(GENESIS_BLOCK_ID, id, NO_PREVIOUS_BLOCK, 0, {});   
 }
 
 vector<double> Node::calculateBalancesFromBlock(int block_id) {

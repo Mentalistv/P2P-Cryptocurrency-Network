@@ -1,15 +1,8 @@
 #include "../headers/Event.h"
 
-// struct EventComparator {
-//     bool operator()(const Event& a, const Event& b) {
-//         return a.time > b.time; // For min-heap priority queue
-//     }
-// };
-
-
-bool EventComparator::operator()(Event& a, Event& b) {
-    if (a.time < b.time) {
-        return true;
+struct EventComparator {
+    bool operator()(const Event* event1, const Event* event2) const {
+        // Custom logic to compare events, you can modify this as per your requirements
+        return event1->time > event2->time;
     }
-    return false;
-}
+};

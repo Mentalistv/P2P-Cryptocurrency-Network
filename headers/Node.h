@@ -13,6 +13,7 @@ using namespace std;
 
 class Node {
     public:
+        Node();
         Node(int id, NodeType node_type, NodeCPUType node_cpu_type);
         
         int id;
@@ -20,7 +21,6 @@ class Node {
         NodeType node_type;
         NodeCPUType node_cpu_type;
 
-        int nof_links;
         vector<int> links;
         unordered_map<int, Block> blocks;
         int deepest_block_id;
@@ -37,4 +37,5 @@ class Node {
         // create a new block to add over the longest chain
         Block createNewBlock();
         
+        static vector<Node*> nodes;
 };

@@ -1,10 +1,15 @@
 #include "../headers/Event.h"
 #include "../headers/Globals.h"
 
-priority_queue<Event, vector<Event>, EventComparator> eventQueue;
 
+GenerateTransaction::GenerateTransaction(
+    Node *generator, event_type type, double time
+) : Event (time, type), generator(generator) {}
 
-void GenerateTransaction::processEvent(){
+GenerateTransaction::~GenerateTransaction() {}
+
+void GenerateTransaction::processEvent() const {
+    cout << "Inside GenerateTransaction event at time " << time << endl;
     Transaction txn = generate();
     transmit(txn);
     initializeNextTransaction();
@@ -13,7 +18,7 @@ void GenerateTransaction::processEvent(){
 // ------------------------------------------------------------------------------------------------
 // this function creates transaction objectand add it to generator node's transaction pool
 //-------------------------------------------------------------------------------------------------
-Transaction GenerateTransaction::generate()
+Transaction GenerateTransaction::generate() const
 {
 
     double amount;
@@ -38,7 +43,7 @@ Transaction GenerateTransaction::generate()
     Transaction txn(generator->id, receiver_ID, amount, time);
 
     // Update transaction pool and balance
-    generator->transaction_pool[txn.getTxnID()] = txn;
+    generator->transaction_pool[txn.txn_ID] = txn;
     
     return txn;
 }
@@ -48,34 +53,28 @@ Transaction GenerateTransaction::generate()
 // compute latency delay for each
 // and push "ReceiveTransaction" event in the event queue
 // ------------------------------------------------------------------------------------------------
-void GenerateTransaction::transmit(Transaction txn)
+void GenerateTransaction::transmit(Transaction txn) const
 {
-    int nof_links = generator->nof_links;
-    for (int i = 0; i < nof_links; i++)
+    for (int link: generator->links)
     {
         // -------------------------- get the neighbour node ----------------------------
-        int neighbour_id = generator->links.at(i);
+        int neighbour_id = link;
         Node *neighbour = nodes.at(neighbour_id);
 
         // // -------------------------- Calculate latency ---------------------------------
         double latency = generator->calculateLatencyToNode(neighbour, TRANSACTION_SIZE_BYTES);
-        
-        
-        ReceiveTransaction rb(neighbour, generator, txn, nodes, type, time + latency);
-
-        eventQueue.push(rb);
-        
+        event_queue.push(new ReceiveTransaction(neighbour, generator, txn, type, time + latency));
     }
 }
 
 // -------------------- Generate next transaction after some delay ----------------------------------
-void GenerateTransaction::initializeNextTransaction()
+void GenerateTransaction::initializeNextTransaction() const
 {
 
     // after a delay this node again generates a new transaction
     double delay;
     delay = exponentialDistribution(1.0 / TRANSACTION_INTERARRIVAL_MEAN);
     
-    GenerateTransaction gt(generator, nodes, type, time + delay);
-    eventQueue.push(gt);
+    event_queue.push(new GenerateTransaction(generator, type, time + delay));
+
 }
