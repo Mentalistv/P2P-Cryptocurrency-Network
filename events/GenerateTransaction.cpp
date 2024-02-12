@@ -44,6 +44,8 @@ Transaction GenerateTransaction::generate() const
 
     // Update transaction pool and balance
     generator->transaction_pool[txn.txn_ID] = txn;
+
+    printf("\n------------- Node %d generated transaction %d at time %f ----------------------\n", generator->id, txn.txn_ID, time);
     
     return txn;
 }
@@ -55,6 +57,9 @@ Transaction GenerateTransaction::generate() const
 // ------------------------------------------------------------------------------------------------
 void GenerateTransaction::transmit(Transaction txn) const
 {
+
+    printf("Transmitted to ...\n");
+    
     for (int link: generator->links)
     {
         // -------------------------- get the neighbour node ----------------------------
@@ -64,7 +69,11 @@ void GenerateTransaction::transmit(Transaction txn) const
         // // -------------------------- Calculate latency ---------------------------------
         double latency = generator->calculateLatencyToNode(neighbour, TRANSACTION_SIZE_BYTES);
         event_queue.push(new ReceiveTransaction(neighbour, generator, txn, type, time + latency));
+
+        printf("Node %d with delay %f\n", neighbour_id, latency);
     }
+
+    printf("\n");
 }
 
 // -------------------- Generate next transaction after some delay ----------------------------------
