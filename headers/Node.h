@@ -38,4 +38,6 @@ class Node {
         Block createNewBlock();
         
         static vector<Node*> nodes;
+
+        int getTransactionPoolSize();
 };

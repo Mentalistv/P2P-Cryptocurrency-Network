@@ -40,6 +40,9 @@ class MineBlock : public Event {
 
     void processEvent() const override;
 
+    void transmitBlock(Block block) const;
+
+    double getPoWDelay() const;
 };
 
 

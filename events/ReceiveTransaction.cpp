@@ -9,7 +9,7 @@ ReceiveTransaction::ReceiveTransaction(
 ReceiveTransaction::~ReceiveTransaction() {}
 
 void ReceiveTransaction::processEvent() const {
-    cout << "Inside ReceiveTransaction event at time " << time << endl;
+    // cout << "Inside ReceiveTransaction event at time " << time << endl;
     int status = receive();
     if(status){
        return; // transaction already exists or some other error 

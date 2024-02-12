@@ -9,7 +9,7 @@ const int RANDOM_GENERATOR_SEED = 13;
 
 const int LIGHT_SPEED_DELAY = 20; //TODO : to be taken from uniform districution
 
-const double TRANSACTION_INTERARRIVAL_MEAN = 5000;
+const double TRANSACTION_INTERARRIVAL_MEAN = 6000;
 
 const int INITIAL_BALANCE = 101;
 

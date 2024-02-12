@@ -17,15 +17,16 @@ bool ReceiveBlock::verifyBlock() const {
     vector<double> balances = receiver->calculateBalancesFromBlock(prev_block_id);
 
     for (Transaction txn : incoming_block.transactions) {
-        balances[txn.sender] -= txn.amount;
+        if (txn.sender != COINBASE_TXN_SENDER_ID)
+            balances[txn.sender] -= txn.amount;
+        
         balances[txn.receiver] += txn.amount;
     }
 
-    // TODO : consider the initial balances
-
     // if any of the balances is negative, its invalid
     for (double balance: balances) {
-        if (balance < 0)
+        // consider the initial balances
+        if (balance + INITIAL_BALANCE < 0)
             return false;
     }
 
@@ -87,5 +88,4 @@ void ReceiveBlock::receiveBlock() const {
         }       
     }
 
-    // Add mine block events
 }

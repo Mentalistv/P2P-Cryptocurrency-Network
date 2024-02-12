@@ -56,6 +56,10 @@ double Node::calculateLatencyToNode(Node* neighbour, int message_size_bytes) {
         return latency; 
 }
 
+int Node::getTransactionPoolSize() {
+    return transaction_pool.size();  
+}
+
 Block Node::createNewBlock() {
     
 }

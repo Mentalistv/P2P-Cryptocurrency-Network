@@ -9,7 +9,7 @@ GenerateTransaction::GenerateTransaction(
 GenerateTransaction::~GenerateTransaction() {}
 
 void GenerateTransaction::processEvent() const {
-    cout << "Inside GenerateTransaction event at time " << time << endl;
+    // cout << "Inside GenerateTransaction event at time " << time << endl;
     Transaction txn = generate();
     transmit(txn);
     initializeNextTransaction();
@@ -70,10 +70,9 @@ void GenerateTransaction::transmit(Transaction txn) const
 // -------------------- Generate next transaction after some delay ----------------------------------
 void GenerateTransaction::initializeNextTransaction() const
 {
-
     // after a delay this node again generates a new transaction
     double delay;
-    delay = exponentialDistribution(1.0 / TRANSACTION_INTERARRIVAL_MEAN);
+    delay = exponentialDistribution(1.0 * NUMBER_OF_NODES / TRANSACTION_INTERARRIVAL_MEAN);
     
     event_queue.push(new GenerateTransaction(generator, type, time + delay));
 
