@@ -16,8 +16,8 @@ void MineBlock::processEvent() const {
 
     Node* miner = nodes[miner_id];
 
-    cout << "prev_block_id " << mine_on_block_id << " dbi " << miner->deepest_block_id << endl;
-    cout << "no of blocks = " << miner->blocks.size();
+    // cout << "prev_block_id " << mine_on_block_id << " dbi " << miner->deepest_block_id << endl;
+    cout << "no of blocks = " << miner->blocks.size() << endl;
 
     
     // If the deepest chain has changed since I started mining, do nothing here

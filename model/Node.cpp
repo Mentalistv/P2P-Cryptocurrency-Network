@@ -19,7 +19,7 @@ vector<double> Node::calculateBalancesFromBlock(int block_id) {
 
     vector<double> balances(NUMBER_OF_NODES, 0);
 
-    // cout << " no of blocks " << blocks.size() << " block id " << block_id << endl;
+    cout << " no of blocks " << blocks.size() << " block id " << block_id << endl;
 
     while(blocks[temp_id].prev_block_id != GENESIS_BLOCK_ID && blocks[temp_id].id != GENESIS_BLOCK_ID) {
         vector<Transaction> transactions = blocks[temp_id].transactions;
@@ -27,11 +27,9 @@ vector<double> Node::calculateBalancesFromBlock(int block_id) {
         for (Transaction txn: transactions) {
             balances[txn.sender] -= txn.amount;
             balances[txn.receiver] += txn.amount;
+            // cout << "here " << blocks[temp_id].id << " " << blocks[temp_id].prev_block_id << endl;
         }
-
-        // cout << "here " << blocks[temp_id].id << " " << blocks[temp_id].prev_block_id << endl;
         temp_id = blocks[temp_id].prev_block_id;
-
     }
 
     for (int i = 0; i < balances.size(); i++) {

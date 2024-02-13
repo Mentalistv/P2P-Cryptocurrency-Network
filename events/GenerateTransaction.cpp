@@ -26,8 +26,10 @@ Transaction GenerateTransaction::generate() const
 
     // Taking a random amount from range (1 to user's balance)
     double lower_bound_amount = 1;
-    double upper_bound_amount = generator->balance;
+    double upper_bound_amount = generator->balance/SPEND_FRACTION_OF_BALANCE;
     amount = uniformDistributionDouble(lower_bound_amount, upper_bound_amount);
+
+    // printf("Amount = %f balance = %f\n", amount, generator->balance);
 
     // Taking a random node id from range (1 to #nodes - except the generator's id)
     int lower_bound_id = 0;
@@ -81,8 +83,8 @@ void GenerateTransaction::initializeNextTransaction() const
 {
     // after a delay this node again generates a new transaction
     double delay;
-    delay = exponentialDistribution(TRANSACTION_INTERARRIVAL_MEAN * NUMBER_OF_NODES);
-    
+    delay = exponentialDistribution((double) TRANSACTION_INTERARRIVAL_MEAN * NUMBER_OF_NODES);
+
     event_queue.push(new GenerateTransaction(generator, type, time + delay));
 
 }

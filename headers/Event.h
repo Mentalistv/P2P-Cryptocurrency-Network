@@ -59,7 +59,7 @@ class ReceiveBlock : public Event {
     void processEvent() const override;
 
     private:
-        bool verifyBlock() const;
+        bool verifyBlock(vector<double> &balances) const;
         void updateTransactionPool() const;
         void receiveBlock() const;
 

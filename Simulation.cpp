@@ -24,7 +24,7 @@ void initilizeHashingPower(vector<Node*> &all_nodes, int slow, int lowCPU) {
     double hp_slow = 1.0/(10*fast_nodes + slow_nodes);
     double hp_fast = 10*hp_slow;
 
-    cout << "Here " << hp_slow << " " << hp_fast << " " << slow_nodes << " " << fast_nodes << endl;
+    // cout << "Here " << hp_slow << " " << hp_fast << " " << slow_nodes << " " << fast_nodes << endl;
 
     while (slow_nodes) {
         int rand_id = uniformDistributionInt(0, NUMBER_OF_NODES - 1);

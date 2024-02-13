@@ -12,7 +12,7 @@ void ReceiveTransaction::processEvent() const {
     // cout << "Inside ReceiveTransaction event at time " << time << endl;
     int status = receive();
     if(status){
-       printf("Transaction already exists in the threadpool\n");  
+    //    printf("Transaction already exists in the threadpool\n");  
        return; // transaction already exists or some other error 
     }
 

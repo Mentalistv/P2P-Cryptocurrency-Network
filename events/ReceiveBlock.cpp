@@ -10,11 +10,10 @@ ReceiveBlock::ReceiveBlock(
 ReceiveBlock::~ReceiveBlock() {}
 
 // TODO: Optkize if possible, maintain the blances for longest chain, update it if the longest chain changes 
-bool ReceiveBlock::verifyBlock() const {
+bool ReceiveBlock::verifyBlock(vector<double> &balances) const {
     Node *receiver = nodes[receiver_id];
     int prev_block_id = incoming_block.prev_block_id;
     // Verify transactions in the block
-    vector<double> balances = receiver->calculateBalancesFromBlock(prev_block_id);
 
     for (Transaction txn : incoming_block.transactions) {
         if (txn.sender != COINBASE_TXN_SENDER_ID)
@@ -26,8 +25,9 @@ bool ReceiveBlock::verifyBlock() const {
     // if any of the balances is negative, its invalid
     for (double balance: balances) {
         // consider the initial balances
-        if (balance + INITIAL_BALANCE < 0)
+        if (balance < 0){
             return false;
+        }
     }
 
     return true;
@@ -44,7 +44,7 @@ void ReceiveBlock::updateTransactionPool() const {
 }
 
 void ReceiveBlock::processEvent() const {
-    cout << "Inside ReceiveBlock event at time " << time << " for receiver " << receiver_id << endl;
+    // cout << "Inside ReceiveBlock event at time " << time << " for receiver " << receiver_id << endl;
     receiveBlock();
 }
 
@@ -58,9 +58,12 @@ void ReceiveBlock::receiveBlock() const {
 
     int prev_block_id = incoming_block.prev_block_id;
 
-    if (!verifyBlock())
+    vector<double> balances = receiver->calculateBalancesFromBlock(prev_block_id);
+
+    // verifyBlock also updates the balances
+    if (!verifyBlock(balances))
         return;
-    cout << "inc block id " << incoming_block.id << endl;
+
     
     // Add the block to the tree
     int prev_height = receiver->blocks[prev_block_id].height;
@@ -72,10 +75,8 @@ void ReceiveBlock::receiveBlock() const {
     // Set deepest block to the incoming block if it has greatest height
     if (receiver->blocks[receiver->deepest_block_id].height < new_height) {
         receiver->deepest_block_id = incoming_block.id;
-
-        // // remove the txns in the block from the receiver's TXN pool
-        // updateTransactionPool();
-
+        receiver->balance = balances[receiver_id];
+        
         event_queue.push(new MineBlock(time, MINE_BLOCK, receiver_id, incoming_block.id));
     }
 

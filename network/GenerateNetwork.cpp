@@ -96,6 +96,6 @@ void generateNetwork(vector<Node*> &nodes) {
 
     } while (!checkConnected(matrix));
 
-    showGraphDegrees(degrees);
+    // showGraphDegrees(degrees);
     initilializeNodeLinks(nodes, matrix);
 }
