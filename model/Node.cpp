@@ -64,13 +64,15 @@ double Node::calculateLatencyToNode(Node* neighbour, int message_size_bytes) {
 
         // 3. Generate queuing delay from exponential distribution (in ms)
         double queue_delay;
-        double mean = 96 / capacity;
+        double mean = 96 / (capacity * 1000);
         queue_delay = exponentialDistribution(mean);
         
         // 4. Compute latency
-        double latency = size_of_txn / (capacity * 1000) + queue_delay + LIGHT_SPEED_DELAY;
+        double latency = size_of_txn / (capacity * 1000000) + queue_delay + LIGHT_SPEED_DELAY;
 
-        return latency/1000; 
+        printf("Latency = %f LIGHT_SPEED = %f\n", latency, LIGHT_SPEED_DELAY);
+
+        return latency; 
 }
 
 int Node::getTransactionPoolSize() {

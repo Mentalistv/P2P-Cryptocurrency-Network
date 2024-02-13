@@ -69,8 +69,11 @@ void MineBlock::transmitBlock(Block block) const {
     Node* miner = nodes[miner_id];
 
     for (int neighbour_id: miner->links) {
-
-        double delay = 13; //TODO
+        Node *neighbour = nodes.at(neighbour_id);
+        int message_size_bytes = block.getMessageSizeBytes();
+        double delay = miner->calculateLatencyToNode(neighbour, message_size_bytes);
+        
+        printf("MIne wala delay = %f\n", delay);
         event_queue.push(new ReceiveBlock(time + delay, RECEIVE_BLOCK, neighbour_id, miner_id, block));
     }
 }

@@ -7,7 +7,7 @@ const int MAX_PEERS_CONNECTED = 6;
 
 const int RANDOM_GENERATOR_SEED = 13;
 
-const int LIGHT_SPEED_DELAY = 20; //TODO : to be taken from uniform districution
+extern double LIGHT_SPEED_DELAY;
 
 const double TRANSACTION_INTERARRIVAL_MEAN = 6;
 

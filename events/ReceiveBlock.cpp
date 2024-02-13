@@ -84,7 +84,7 @@ void ReceiveBlock::receiveBlock() const {
         if (neighbour_id != sender_id) {
             Node *neighbour = nodes.at(neighbour_id);
             int message_size_bytes = incoming_block.getMessageSizeBytes();
-            double latency = receiver->calculateLatencyToNode(neighbour, message_size_bytes); //TODO
+            double latency = receiver->calculateLatencyToNode(neighbour, message_size_bytes); 
             cout << "Latency " << latency << " time " << time << " neighbour " << neighbour_id << endl;
             event_queue.push(new ReceiveBlock(time + latency, RECEIVE_BLOCK, neighbour_id, receiver_id, incoming_block));
         }       

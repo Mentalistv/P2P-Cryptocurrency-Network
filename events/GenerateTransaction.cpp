@@ -45,7 +45,7 @@ Transaction GenerateTransaction::generate() const
     // Update transaction pool and balance
     generator->transaction_pool[txn.txn_ID] = txn;
 
-    printf("\n------------- Node %d generated transaction %d at time %f ----------------------\n", generator->id, txn.txn_ID, time);
+    // printf("\n------------- Node %d generated transaction %d at time %f ----------------------\n", generator->id, txn.txn_ID, time);
     
     return txn;
 }
@@ -58,7 +58,7 @@ Transaction GenerateTransaction::generate() const
 void GenerateTransaction::transmit(Transaction txn) const
 {
 
-    printf("Transmitted to ...\n");
+    // printf("Transmitted to ...\n");
     
     for (int link: generator->links)
     {
@@ -70,10 +70,10 @@ void GenerateTransaction::transmit(Transaction txn) const
         double latency = generator->calculateLatencyToNode(neighbour, TRANSACTION_SIZE_BYTES);
         event_queue.push(new ReceiveTransaction(neighbour, generator, txn, type, time + latency));
 
-        printf("Node %d with delay %f\n", neighbour_id, latency);
+        // printf("Node %d with delay %f\n", neighbour_id, latency);
     }
 
-    printf("\n");
+    // printf("\n");
 }
 
 // -------------------- Generate next transaction after some delay ----------------------------------
@@ -81,7 +81,7 @@ void GenerateTransaction::initializeNextTransaction() const
 {
     // after a delay this node again generates a new transaction
     double delay;
-    delay = exponentialDistribution(TRANSACTION_INTERARRIVAL_MEAN/(1.0*NUMBER_OF_NODES));
+    delay = exponentialDistribution(TRANSACTION_INTERARRIVAL_MEAN * NUMBER_OF_NODES);
     
     event_queue.push(new GenerateTransaction(generator, type, time + delay));
 

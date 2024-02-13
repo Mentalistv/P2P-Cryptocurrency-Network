@@ -13,6 +13,7 @@ using namespace std;
 vector<Node*> nodes;
 priority_queue<Event*, std::vector<Event*>, EventComparator> event_queue;
 int BLOCK_ID_GENERATOR = 0;
+double LIGHT_SPEED_DELAY = 0;
 
 
 void initilizeHashingPower(vector<Node*> &all_nodes, int slow, int lowCPU) {
@@ -76,6 +77,7 @@ int main(int argc, char const *argv[]) {
     nodes = allnodes;
 
     generateNetwork(nodes);
+    LIGHT_SPEED_DELAY = uniformDistributionDouble(0.01, 0.5);
 
     // TODO: initilize fast slow nodes and fast slow CPUs
 
