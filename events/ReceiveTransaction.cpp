@@ -20,6 +20,10 @@ void ReceiveTransaction::processEvent() const {
 
 }
 
+void ReceiveTransaction::printEvent() const {
+    cout << "Event ReceiveTransaction at time = " << time << endl; 
+}
+
 // ----------------------------- This funtiom receives transation and updates Node's local data --------------------------
 int ReceiveTransaction::receive() const {
     

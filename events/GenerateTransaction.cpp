@@ -15,6 +15,10 @@ void GenerateTransaction::processEvent() const {
     initializeNextTransaction();
 }
 
+void GenerateTransaction::printEvent() const {
+    cout << "Event Generate Transaction at time = " << time << endl; 
+}
+
 // ------------------------------------------------------------------------------------------------
 // this function creates transaction objectand add it to generator node's transaction pool
 //-------------------------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 #ifndef SIMULATION_PARAMETERS_H
 #define SIMULATION_PARAMETERS_H
 
-const int NUMBER_OF_NODES = 10;
+const int NUMBER_OF_NODES = 100;
 const int MIN_PEERS_CONNECTED = 3;
 const int MAX_PEERS_CONNECTED = 6;
 
@@ -9,7 +9,7 @@ const int RANDOM_GENERATOR_SEED = 13;
 
 extern double LIGHT_SPEED_DELAY;
 
-const double TRANSACTION_INTERARRIVAL_MEAN = 12; //secs
+const double TRANSACTION_INTERARRIVAL_MEAN = 10; //secs
 
 const int INITIAL_BALANCE = 101;
 

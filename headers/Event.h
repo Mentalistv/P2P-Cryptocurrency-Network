@@ -21,6 +21,8 @@ class Event{
         virtual void processEvent() const;
         
         double time;
+
+        virtual void printEvent() const;
 };
 
 // Custom comparator for priority_queue
@@ -40,9 +42,9 @@ class MineBlock : public Event {
 
     void processEvent() const override;
 
-    void transmitBlock(Block block) const;
+    void printEvent() const override;
 
-    long double getPoWDelay() const;
+    void transmitBlock(Block block) const;
 };
 
 
@@ -57,6 +59,7 @@ class ReceiveBlock : public Event {
     virtual ~ReceiveBlock();
 
     void processEvent() const override;
+    void printEvent() const override;
 
     private:
         bool verifyBlock(vector<double> &balances) const;
@@ -81,6 +84,7 @@ public:
     
     //
     void processEvent() const override;
+    void printEvent() const override;
 
     // ----------------------------- This funtiom receives transation and updates Node's local data --------------------------
     int receive() const;
@@ -106,6 +110,7 @@ public:
 
     //
     void processEvent() const override;
+    void printEvent() const override;
     
     // ------------------------------------------------------------------------------------------------ 
     //this function creates transaction object and add it to generator node's transaction pool 

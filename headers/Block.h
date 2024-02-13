@@ -24,7 +24,7 @@ class Block {
         
         
         // for local storage at node
-        int height{};
+        int height = 0;
 
         int getMessageSizeBytes() const;
 };

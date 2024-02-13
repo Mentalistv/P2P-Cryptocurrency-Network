@@ -30,6 +30,12 @@ double exponentialDistribution(double mean){
     return random;
 }
 
+double getPoWDelay(double hashing_power) {
+    cout << "hashing power = " << hashing_power << endl;
+    double delay = exponentialDistribution((double) BLOCK_INTERARRIVAL_TIME/ (double) hashing_power);
+    return delay;
+}
+
 long double exponentialDistributionLongDouble(double mean){
     random_device rd;
     mt19937 gen(rd());

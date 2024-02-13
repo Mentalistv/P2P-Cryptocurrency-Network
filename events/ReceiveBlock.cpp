@@ -5,13 +5,14 @@
 
 ReceiveBlock::ReceiveBlock(
     double time, event_type type, int receiver_id, int sender_id, Block incoming_block
-) : Event(time, type), receiver_id(receiver_id), incoming_block(incoming_block) {}
+) : Event(time, type), receiver_id(receiver_id), incoming_block(incoming_block), sender_id(sender_id) {}
 
 ReceiveBlock::~ReceiveBlock() {}
 
 // TODO: Optkize if possible, maintain the blances for longest chain, update it if the longest chain changes 
 bool ReceiveBlock::verifyBlock(vector<double> &balances) const {
     Node *receiver = nodes[receiver_id];
+
     int prev_block_id = incoming_block.prev_block_id;
     // Verify transactions in the block
 
@@ -48,27 +49,34 @@ void ReceiveBlock::processEvent() const {
     receiveBlock();
 }
 
+void ReceiveBlock::printEvent() const {
+    cout << "Event ReceiveBlock at time = " << time << endl; 
+}
+
 void ReceiveBlock::receiveBlock() const {
     Node *receiver = nodes[receiver_id];
 
-
+    // printf("\n------------- Node %d receiving block %d from Node %d at time %f ----------------------\n", receiver->id, incoming_block.id, sender_id, time);
     // if the block is already present, then return
-    if (receiver->blocks.find(incoming_block.id) != receiver->blocks.end())
+    if (receiver->blocks.find(incoming_block.id) != receiver->blocks.end()) {
+        // printf("Block already exists in the node\n");          
         return;
+    }
 
     int prev_block_id = incoming_block.prev_block_id;
 
     vector<double> balances = receiver->calculateBalancesFromBlock(prev_block_id);
 
     // verifyBlock also updates the balances
-    if (!verifyBlock(balances))
+    if (!verifyBlock(balances)) {
         return;
-
+    }
     
     // Add the block to the tree
     int prev_height = receiver->blocks[prev_block_id].height;
     int new_height = prev_height + 1;
-    receiver->blocks[incoming_block.id] = incoming_block;
+
+    receiver->blocks.insert({incoming_block.id, incoming_block});
     receiver->blocks[incoming_block.id].height = prev_height + 1;
 
 
@@ -77,18 +85,24 @@ void ReceiveBlock::receiveBlock() const {
         receiver->deepest_block_id = incoming_block.id;
         receiver->balance = balances[receiver_id];
         
-        event_queue.push(new MineBlock(time, MINE_BLOCK, receiver_id, incoming_block.id));
+        double delay = getPoWDelay(receiver->hashing_power);
+        event_queue.push(new MineBlock(time + delay, MINE_BLOCK, receiver_id, incoming_block.id));
     }
-
+    // printf("Re-transmitted to ...\n");
     // Add receive block events to transmit the received block
     for (int neighbour_id: receiver->links) {
         if (neighbour_id != sender_id) {
             Node *neighbour = nodes.at(neighbour_id);
             int message_size_bytes = incoming_block.getMessageSizeBytes();
             double latency = receiver->calculateLatencyToNode(neighbour, message_size_bytes); 
-            cout << "Latency " << latency << " time " << time << " neighbour " << neighbour_id << endl;
+            
             event_queue.push(new ReceiveBlock(time + latency, RECEIVE_BLOCK, neighbour_id, receiver_id, incoming_block));
+
+
+            // printf("Node %d with delay %f\n", neighbour_id, latency);
         }       
     }
+
+    // printf("\n");
 
 }
