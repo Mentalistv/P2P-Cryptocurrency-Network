@@ -31,7 +31,6 @@ double exponentialDistribution(double mean){
 }
 
 double getPoWDelay(double hashing_power) {
-    cout << "hashing power = " << hashing_power << endl;
     double delay = exponentialDistribution((double) BLOCK_INTERARRIVAL_TIME/ (double) hashing_power);
     return delay;
 }

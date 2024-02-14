@@ -77,7 +77,7 @@ void ReceiveBlock::receiveBlock() const {
     int new_height = prev_height + 1;
 
     receiver->blocks.insert({incoming_block.id, incoming_block});
-    receiver->blocks[incoming_block.id].height = prev_height + 1;
+    receiver->blocks[incoming_block.id].height = new_height;
 
 
     // Set deepest block to the incoming block if it has greatest height

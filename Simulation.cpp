@@ -20,11 +20,10 @@ void initilizeHashingPower(vector<Node*> &all_nodes, float slow, float lowCPU) {
     int slow_nodes = slow;
     int fast_nodes = NUMBER_OF_NODES - slow_nodes;
     int low_CPU_nodes = lowCPU;
+    int high_CPU_nodes = NUMBER_OF_NODES - low_CPU_nodes;
 
-    double hp_slow = 1.0/(10*fast_nodes + slow_nodes);
+    double hp_slow = 1.0/(10*high_CPU_nodes + low_CPU_nodes);
     double hp_fast = 10*hp_slow;
-
-    cout << "Here " << hp_slow << " " << hp_fast << " " << slow_nodes << " " << fast_nodes << endl;
 
     while (slow_nodes > 0) {
         int rand_id = uniformDistributionInt(0, NUMBER_OF_NODES - 1);
@@ -87,10 +86,11 @@ int main(int argc, char const *argv[]) {
     }
 
 
-    double simulation_stop_time = BLOCK_INTERARRIVAL_TIME * 10;
+    double simulation_stop_time = BLOCK_INTERARRIVAL_TIME * 100;
 
     while (!event_queue.empty()) {
         Event* event = event_queue.top();
+
         // cout << "Size of event queue = " << event_queue.size() << endl;
         if (event->time > simulation_stop_time) {
             if (event->type == GENERATE_TRANSACTION || event->type == MINE_BLOCK) {
@@ -127,20 +127,32 @@ int main(int argc, char const *argv[]) {
     cout << endl;
 
 
-    for (Node* node: nodes) {
-        Block temp = node->blocks[node->deepest_block_id];
+    // for (auto b: nodes[0]->blocks) {
+    //     Block b1 = b.second;
+    //     printf("%d,%d\n", b1.id, b1.prev_block_id);
+    // }
+
+
+    // for (Node* node: nodes) {
+        // Block temp = node->blocks[node->deepest_block_id];
+        Block temp = nodes[0]->blocks[nodes[0]->deepest_block_id];
         int count = 0;
         while (temp.id != -1) {
-            // printf("%d ", temp.id);
+            printf("Block mined at time = %f by %d\n", temp.timestamp, temp.owner_id);
+            // printf("%d,%d\n", temp.id, temp.prev_block_id);
             count++;
             temp = nodes[lowest]->blocks[temp.prev_block_id];
         }
         count++;
-        printf("printing node id %d with LC = %d count = %d\n", node->id, node->blocks[node->deepest_block_id].height + 1, count);
+        // printf("printing node id %d with LC = %d count = %d\n", node->id, node->blocks[node->deepest_block_id].height + 1, count);
+        printf("printing node id %d with LC = %d count = %d\n", nodes[0]->id, nodes[0]->blocks[nodes[0]->deepest_block_id].height + 1, count);
 
-    }
+    // }
 
     cout << endl;
 
     return 0;
 }
+
+
+

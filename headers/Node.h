@@ -18,6 +18,7 @@ class Node {
         
         int id;
         double balance;
+        vector<double> balances; // balances as per the current longest chain
         NodeType node_type;
         NodeCPUType node_cpu_type;
 
