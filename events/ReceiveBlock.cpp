@@ -65,7 +65,13 @@ void ReceiveBlock::receiveBlock() const {
 
     int prev_block_id = incoming_block.prev_block_id;
 
-    vector<double> balances = receiver->calculateBalancesFromBlock(prev_block_id);
+    vector<double> balances;
+    if (receiver->deepest_block_id == incoming_block.prev_block_id) {
+        balances = receiver->balances;
+    } else {
+        balances = receiver->calculateBalancesFromBlock(prev_block_id);
+    }
+
 
     // verifyBlock also updates the balances
     if (!verifyBlock(balances)) {
@@ -79,15 +85,25 @@ void ReceiveBlock::receiveBlock() const {
     receiver->blocks.insert({incoming_block.id, incoming_block});
     receiver->blocks[incoming_block.id].height = new_height;
 
+    if (receiver->id == 0)
+        cout << "Node 0 just received block"  << incoming_block.id << endl;
 
     // Set deepest block to the incoming block if it has greatest height
     if (receiver->blocks[receiver->deepest_block_id].height < new_height) {
         receiver->deepest_block_id = incoming_block.id;
         receiver->balance = balances[receiver_id];
+        receiver->balances = balances;
+
+        // cout << "updating the balances for node " << receiver->id << endl;
         
         double delay = getPoWDelay(receiver->hashing_power);
         event_queue.push(new MineBlock(time + delay, MINE_BLOCK, receiver_id, incoming_block.id));
+
+    } else {
+        printf("not updating for node %d while receiving block %d and dbi = %d dbi height = %d\n", receiver->id, incoming_block.id, receiver->deepest_block_id, receiver->blocks[receiver->deepest_block_id].height);
+        // cout << "not updating for node  " << receiver->id << " dbi = " << receiver->blocks[receiver->deepest_block_id].height << " height " << new_height << endl;
     }
+
     // printf("Re-transmitted to ...\n");
     // Add receive block events to transmit the received block
     for (int neighbour_id: receiver->links) {

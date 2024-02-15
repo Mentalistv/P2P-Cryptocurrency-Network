@@ -14,6 +14,7 @@ vector<Node*> nodes;
 priority_queue<Event*, std::vector<Event*>, EventComparator> event_queue;
 int BLOCK_ID_GENERATOR = 0;
 double LIGHT_SPEED_DELAY = 0;
+vector<vector<double>> propagation_delays;
 
 
 void initilizeHashingPower(vector<Node*> &all_nodes, float slow, float lowCPU) {
@@ -49,6 +50,32 @@ void initilizeHashingPower(vector<Node*> &all_nodes, float slow, float lowCPU) {
     }
 }
 
+void initilizePropagationDelays() {
+    propagation_delays = vector<vector<double>>(NUMBER_OF_NODES, vector<double>(NUMBER_OF_NODES, 0.0));
+    for (int i = 0; i < NUMBER_OF_NODES; i++) {
+        for (int j = i; j < NUMBER_OF_NODES; j++) {
+            double delay = uniformDistributionDouble(LIGHT_SPEED_DELAY_MIN, LIGHT_SPEED_DELAY_MAX);
+            propagation_delays[i][j] = delay;
+            propagation_delays[j][i] = delay;
+        }
+    }
+}
+
+void printFinalState() {
+    for (Node* node: nodes) {
+        printf("Node ID = %d Blocks = %d  LC = %d DBI = %d\t", node->id, node->blocks.size(), node->blocks[node->deepest_block_id].height + 1, node->deepest_block_id);
+        if (node->node_cpu_type == NODE_CPU_FAST)
+            printf("CPU_FAST ");
+        else 
+            printf("CPU_SLOW ");
+
+        if (node->node_type == NODE_FAST)
+            printf("NODE_FAST \n");
+        else 
+            printf("NODE_SLOW \n"); 
+    }
+}
+
 int main(int argc, char const *argv[]) {    
     Transaction::txn_count = 0;
     
@@ -76,8 +103,7 @@ int main(int argc, char const *argv[]) {
     nodes = allnodes;
 
     generateNetwork(nodes);
-    // LIGHT_SPEED_DELAY = uniformDistributionDouble(0.01, 0.5);
-    LIGHT_SPEED_DELAY = 10;
+    initilizePropagationDelays();
 
     for (Node* node: nodes) {
         event_queue.push(new GenerateTransaction(node, GENERATE_TRANSACTION, 0.0));
@@ -86,7 +112,7 @@ int main(int argc, char const *argv[]) {
     }
 
 
-    double simulation_stop_time = BLOCK_INTERARRIVAL_TIME * 100;
+    double simulation_stop_time = BLOCK_INTERARRIVAL_TIME * SIMULATION_TIME_MULTIPLIER;
 
     while (!event_queue.empty()) {
         Event* event = event_queue.top();
@@ -133,23 +159,42 @@ int main(int argc, char const *argv[]) {
     // }
 
 
-    // for (Node* node: nodes) {
-        // Block temp = node->blocks[node->deepest_block_id];
-        Block temp = nodes[0]->blocks[nodes[0]->deepest_block_id];
+    for (Node* node: nodes) {
+        Block temp = node->blocks[node->deepest_block_id];
+        // // Block temp = nodes[0]->blocks[nodes[0]->deepest_block_id];
         int count = 0;
         while (temp.id != -1) {
-            printf("Block mined at time = %f by %d\n", temp.timestamp, temp.owner_id);
-            // printf("%d,%d\n", temp.id, temp.prev_block_id);
+            // printf("Block mined at time = %f by %d\n", temp.timestamp, temp.owner_id);
+            // printf("%d ", temp.id);
             count++;
             temp = nodes[lowest]->blocks[temp.prev_block_id];
         }
-        count++;
+        // cout << endl;
+        // count++;
         // printf("printing node id %d with LC = %d count = %d\n", node->id, node->blocks[node->deepest_block_id].height + 1, count);
-        printf("printing node id %d with LC = %d count = %d\n", nodes[0]->id, nodes[0]->blocks[nodes[0]->deepest_block_id].height + 1, count);
+        // printf("printing node id %d with LC = %d count = %d\n", nodes[0]->id, nodes[0]->blocks[nodes[0]->deepest_block_id].height + 1, count);
 
-    // }
+
+        // vector<double> balances = node->calculateBalancesFromBlock(node->deepest_block_id);
+        vector<double> balances = node->balances;
+        for (double balance: balances) {
+            cout << balance << " ";
+        }
+        cout << endl;
+    }
 
     cout << endl;
+
+    cout << "Balances should be ..." << endl;
+
+    for (Node* node: nodes) {
+        vector<double> balances = node->calculateBalancesFromBlock(node->deepest_block_id);
+        printf ("dbi = %d ", node->deepest_block_id);
+        for (double balance: balances) {
+            cout << balance << " ";
+        }
+        cout << endl;
+    }
 
     return 0;
 }

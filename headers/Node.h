@@ -41,4 +41,6 @@ class Node {
         static vector<Node*> nodes;
 
         int getTransactionPoolSize();
+
+        void updateBalances(Block block);
 };

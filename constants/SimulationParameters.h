@@ -7,9 +7,10 @@ const int MAX_PEERS_CONNECTED = 6;
 
 const int RANDOM_GENERATOR_SEED = 13;
 
-extern double LIGHT_SPEED_DELAY;
+const double LIGHT_SPEED_DELAY_MIN = 0.01;
+const double LIGHT_SPEED_DELAY_MAX = 0.5;
 
-const double TRANSACTION_INTERARRIVAL_MEAN = 10; //secs
+const double TRANSACTION_INTERARRIVAL_MEAN = 60; //secs
 
 const int INITIAL_BALANCE = 101;
 
@@ -18,5 +19,7 @@ const int TRANSACTION_SIZE_BYTES = 1024; //bytes
 const double BLOCK_INTERARRIVAL_TIME = 600.0; //secs
 
 const double SPEND_FRACTION_OF_BALANCE = 10.0;
+
+const double SIMULATION_TIME_MULTIPLIER = 100;
 
 #endif // SIMULATION_PARAMETERS_H

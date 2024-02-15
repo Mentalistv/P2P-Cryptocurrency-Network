@@ -1,14 +1,17 @@
-#include "../headers/Node.h"
+#include "../headers/Event.h"
 #include "../headers/Utility.h"
 #include "../constants/SimulationParameters.h"
+#include "../headers/Globals.h"
 
 
 Node::Node(int id, NodeType node_type, NodeCPUType node_cpu_type) {
     this->id = id;
     this->node_type = node_type;
     this->node_cpu_type = node_cpu_type;
-
+    
     deepest_block_id = GENESIS_BLOCK_ID;
+    this->balances = vector<double>(NUMBER_OF_NODES, INITIAL_BALANCE);
+    this->balance = INITIAL_BALANCE;
 
     blocks.insert({GENESIS_BLOCK_ID, Block(GENESIS_BLOCK_ID, id, NO_PREVIOUS_BLOCK, 0, {})});   
 }
@@ -20,7 +23,7 @@ vector<double> Node::calculateBalancesFromBlock(int block_id) {
 
     // cout << " no of blocks " << blocks.size() << " block id " << block_id << endl;
 
-    while(blocks[temp_id].prev_block_id != GENESIS_BLOCK_ID && blocks[temp_id].id != GENESIS_BLOCK_ID) {
+    while(blocks[temp_id].id != GENESIS_BLOCK_ID) {
         vector<Transaction> transactions = blocks[temp_id].transactions;
 
         for (Transaction txn: transactions) {
@@ -41,6 +44,16 @@ vector<double> Node::calculateBalancesFromBlock(int block_id) {
     // cout << endl;
 
     return balances;
+}
+
+// This updates the balances when adding a block to the longest chain
+void Node::updateBalances(Block block) {
+    for (Transaction txn: block.transactions) {
+        if (txn.sender != COINBASE_TXN_SENDER_ID)
+            balances[txn.sender] -= txn.amount;
+
+        balances[txn.receiver] += txn.amount;
+    }
 }
 
 double Node::calculateLatencyToNode(Node* neighbour, int message_size_bytes) {
@@ -67,7 +80,8 @@ double Node::calculateLatencyToNode(Node* neighbour, int message_size_bytes) {
         queue_delay = exponentialDistribution(mean);
         
         // 4. Compute latency
-        double latency = size_of_txn / (capacity * 1000000) + queue_delay + LIGHT_SPEED_DELAY;
+        double latency = size_of_txn / (capacity * 1000000) 
+            + queue_delay + propagation_delays[this->id][neighbour->id];
 
         // printf("Latency = %f LIGHT_SPEED = %f\n", latency, LIGHT_SPEED_DELAY);
 

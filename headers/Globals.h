@@ -7,6 +7,8 @@ extern int BLOCK_ID_GENERATOR;
 
 extern vector<Node*> nodes;
 
-extern priority_queue<Event*, vector<Event*>, EventComparator> event_queue; // Declaration
+extern vector<vector<double>> propagation_delays;
+
+extern priority_queue<Event*, vector<Event*>, EventComparator> event_queue;
 
 #endif

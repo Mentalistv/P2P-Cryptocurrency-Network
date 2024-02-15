@@ -52,6 +52,7 @@ void MineBlock::processEvent() const {
 
     miner->blocks.insert({new_block.id, new_block});
     miner->deepest_block_id = new_block.id;
+    miner->updateBalances(new_block);
 
     // printf("\n------------- Node %d mined block %d at time %f ----------------------\n", miner->id, new_block.id, time);
     transmitBlock(new_block);
