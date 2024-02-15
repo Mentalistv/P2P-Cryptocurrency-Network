@@ -56,10 +56,8 @@ void ReceiveBlock::printEvent() const {
 void ReceiveBlock::receiveBlock() const {
     Node *receiver = nodes[receiver_id];
 
-    // printf("\n------------- Node %d receiving block %d from Node %d at time %f ----------------------\n", receiver->id, incoming_block.id, sender_id, time);
-    // if the block is already present, then return
+    // if block already received, do not process it again
     if (receiver->blocks.find(incoming_block.id) != receiver->blocks.end()) {
-        // printf("Block already exists in the node\n");          
         return;
     }
 
@@ -85,26 +83,20 @@ void ReceiveBlock::receiveBlock() const {
     receiver->blocks.insert({incoming_block.id, incoming_block});
     receiver->blocks[incoming_block.id].height = new_height;
 
-    if (receiver->id == 0)
-        cout << "Node 0 just received block"  << incoming_block.id << endl;
 
     // Set deepest block to the incoming block if it has greatest height
     if (receiver->blocks[receiver->deepest_block_id].height < new_height) {
         receiver->deepest_block_id = incoming_block.id;
         receiver->balance = balances[receiver_id];
         receiver->balances = balances;
-
-        // cout << "updating the balances for node " << receiver->id << endl;
         
         double delay = getPoWDelay(receiver->hashing_power);
         event_queue.push(new MineBlock(time + delay, MINE_BLOCK, receiver_id, incoming_block.id));
 
     } else {
-        printf("not updating for node %d while receiving block %d and dbi = %d dbi height = %d\n", receiver->id, incoming_block.id, receiver->deepest_block_id, receiver->blocks[receiver->deepest_block_id].height);
-        // cout << "not updating for node  " << receiver->id << " dbi = " << receiver->blocks[receiver->deepest_block_id].height << " height " << new_height << endl;
+        // this means there is a fork
     }
 
-    // printf("Re-transmitted to ...\n");
     // Add receive block events to transmit the received block
     for (int neighbour_id: receiver->links) {
         if (neighbour_id != sender_id) {
@@ -113,12 +105,7 @@ void ReceiveBlock::receiveBlock() const {
             double latency = receiver->calculateLatencyToNode(neighbour, message_size_bytes); 
             
             event_queue.push(new ReceiveBlock(time + latency, RECEIVE_BLOCK, neighbour_id, receiver_id, incoming_block));
-
-
-            // printf("Node %d with delay %f\n", neighbour_id, latency);
         }       
     }
-
-    // printf("\n");
 
 }

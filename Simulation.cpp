@@ -63,7 +63,7 @@ void initilizePropagationDelays() {
 
 void printFinalState() {
     for (Node* node: nodes) {
-        printf("Node ID = %d Blocks = %d  LC = %d DBI = %d\t", node->id, node->blocks.size(), node->blocks[node->deepest_block_id].height + 1, node->deepest_block_id);
+        printf("Node ID = %d Blocks = %d  Longest Chain = %d\t", node->id, node->blocks.size(), node->blocks[node->deepest_block_id].height + 1);
         if (node->node_cpu_type == NODE_CPU_FAST)
             printf("CPU_FAST ");
         else 
@@ -74,6 +74,33 @@ void printFinalState() {
         else 
             printf("NODE_SLOW \n"); 
     }
+}
+
+void printBalancesFromLongestChain() {
+    cout << "Balances from longest chain..." << endl;
+    for (Node* node: nodes) {
+        vector<double> balances = node->calculateBalancesFromBlock(node->deepest_block_id);
+        printf ("dbi = %d ", node->deepest_block_id);
+        for (double balance: balances) {
+            cout << balance << " ";
+        }
+        cout << endl;
+    }
+}
+
+void printBalancesFromBalanceVectors() {
+    cout << "balances from balance vectors..." << endl;
+    for (Node* node: nodes) {
+        vector<double> balances = node->balances;
+        for (double balance: balances) {
+            cout << balance << " ";
+        }
+        cout << endl;
+    }
+}
+
+double getRatioForNumberOfBlocksGeneratedByCPUType() {
+
 }
 
 int main(int argc, char const *argv[]) {    
@@ -94,7 +121,7 @@ int main(int argc, char const *argv[]) {
     vector<Node*> allnodes;
 
     for (int i = 0; i < NUMBER_OF_NODES; i++) {
-        // TODO: Make this distribution random
+        // the distri
         allnodes.push_back(new Node(node_id++, NODE_FAST, NODE_CPU_FAST));
     }
 
@@ -117,7 +144,6 @@ int main(int argc, char const *argv[]) {
     while (!event_queue.empty()) {
         Event* event = event_queue.top();
 
-        // cout << "Size of event queue = " << event_queue.size() << endl;
         if (event->time > simulation_stop_time) {
             if (event->type == GENERATE_TRANSACTION || event->type == MINE_BLOCK) {
                 event_queue.pop();
@@ -127,75 +153,14 @@ int main(int argc, char const *argv[]) {
 
         // event->printEvent();
         event->processEvent();
-        // if (event->type == MINE_BLOCK)
 
         event_queue.pop();
     }
 
-    int lowest = 0;
-
-    for (Node* node: nodes) {
-        printf("Node ID = %d Blocks = %d  LC = %d DBI = %d\t", node->id, node->blocks.size(), node->blocks[node->deepest_block_id].height + 1, node->deepest_block_id);
-        if (node->node_cpu_type == NODE_CPU_FAST)
-            printf("CPU_FAST ");
-        else 
-            printf("CPU_SLOW ");
-
-        if (node->node_type == NODE_FAST)
-            printf("NODE_FAST \n");
-        else 
-            printf("NODE_SLOW \n");
-
-        if (node->blocks[node->deepest_block_id].height + 1 < 25)
-            lowest = node->id;
-        
-    }
-    cout << endl;
-
-
-    // for (auto b: nodes[0]->blocks) {
-    //     Block b1 = b.second;
-    //     printf("%d,%d\n", b1.id, b1.prev_block_id);
-    // }
-
-
-    for (Node* node: nodes) {
-        Block temp = node->blocks[node->deepest_block_id];
-        // // Block temp = nodes[0]->blocks[nodes[0]->deepest_block_id];
-        int count = 0;
-        while (temp.id != -1) {
-            // printf("Block mined at time = %f by %d\n", temp.timestamp, temp.owner_id);
-            // printf("%d ", temp.id);
-            count++;
-            temp = nodes[lowest]->blocks[temp.prev_block_id];
-        }
-        // cout << endl;
-        // count++;
-        // printf("printing node id %d with LC = %d count = %d\n", node->id, node->blocks[node->deepest_block_id].height + 1, count);
-        // printf("printing node id %d with LC = %d count = %d\n", nodes[0]->id, nodes[0]->blocks[nodes[0]->deepest_block_id].height + 1, count);
-
-
-        // vector<double> balances = node->calculateBalancesFromBlock(node->deepest_block_id);
-        vector<double> balances = node->balances;
-        for (double balance: balances) {
-            cout << balance << " ";
-        }
-        cout << endl;
-    }
-
-    cout << endl;
-
-    cout << "Balances should be ..." << endl;
-
-    for (Node* node: nodes) {
-        vector<double> balances = node->calculateBalancesFromBlock(node->deepest_block_id);
-        printf ("dbi = %d ", node->deepest_block_id);
-        for (double balance: balances) {
-            cout << balance << " ";
-        }
-        cout << endl;
-    }
-
+    printFinalState();
+    // printBalancesFromLongestChain();
+    // printBalancesFromBalanceVectors();
+    
     return 0;
 }
 
