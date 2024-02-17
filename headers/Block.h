@@ -19,12 +19,13 @@ class Block {
         int prev_block_id{};
 
 
-        double timestamp{};
+        double timestamp = 0.0;
         vector <Transaction> transactions;
         
+        int getMessageSizeBytes() const;
         
         // for local storage at node
         int height = 0;
+        double arrival_time = 0.0;
 
-        int getMessageSizeBytes() const;
 };

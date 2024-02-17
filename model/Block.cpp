@@ -15,5 +15,5 @@ Block::Block() {
 }
 
 int Block::getMessageSizeBytes() const {
-    return transactions.size() * TRANSACTION_SIZE_BYTES;
+    return transactions.size() * TRANSACTION_SIZE_BYTES + 1; // Empty block is considered to be 1kb
 }

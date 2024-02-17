@@ -18,7 +18,6 @@ Node::Node(int id, NodeType node_type, NodeCPUType node_cpu_type) {
 
 vector<double> Node::calculateBalancesFromBlock(int block_id) {
     int temp_id = block_id;
-
     vector<double> balances(NUMBER_OF_NODES, 0);
 
     while(blocks[temp_id].id != GENESIS_BLOCK_ID) {
@@ -80,6 +79,39 @@ int Node::getTransactionPoolSize() {
     return transaction_pool.size();  
 }
 
-Block Node::createNewBlock() {
-    
+Block Node::createNewBlock(int mine_on_block_id, double time) {
+    int count = 1023;
+    vector <Transaction> txns;
+
+    // Mark the used transactions
+    unordered_map<long, bool> used_txns;
+
+    Block temp = blocks[mine_on_block_id];
+    while (temp.id != -1) {
+        for (Transaction t: temp.transactions) {
+            used_txns[t.txn_ID] = true;
+        }
+        temp = blocks[temp.prev_block_id];
+    }
+
+    // Add transactions except the used ones
+    for (auto it = transaction_pool.begin(); it != transaction_pool.end(); ++it) {
+        const pair<long, Transaction>& element = *it;
+        if (!used_txns[element.first]) {
+            txns.push_back(element.second);
+            count--;
+        }
+        if (count == 0)
+            break;
+    }
+
+    Transaction coinbase(COINBASE_TXN_SENDER_ID, id, 50.0, time);
+    txns.push_back(coinbase);
+
+    Block new_block = Block(BLOCK_ID_GENERATOR++, id, mine_on_block_id, time, txns);
+    int prev_height = blocks[mine_on_block_id].height;
+    new_block.height = prev_height + 1;
+    new_block.arrival_time = time;
+
+    return new_block;
 }
