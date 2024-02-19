@@ -46,6 +46,7 @@ void MineBlock::processEvent() const {
     Block new_block = Block(BLOCK_ID_GENERATOR++, miner_id, miner->deepest_block_id, time, txns);
     int prev_height = miner->blocks[miner->deepest_block_id].height;
     new_block.height = prev_height + 1;
+    new_block.arrival_time = time;
 
     // cout << time << " when block mined miner = " << miner_id << " mine on " << mine_on_block_id << endl;
 

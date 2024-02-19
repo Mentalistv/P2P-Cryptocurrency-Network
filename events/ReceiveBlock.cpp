@@ -82,6 +82,7 @@ void ReceiveBlock::receiveBlock() const {
 
     receiver->blocks.insert({incoming_block.id, incoming_block});
     receiver->blocks[incoming_block.id].height = new_height;
+    receiver->blocks[incoming_block.id].arrival_time = time;
 
 
     // Set deepest block to the incoming block if it has greatest height
