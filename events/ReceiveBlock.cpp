@@ -67,6 +67,8 @@ void ReceiveBlock::receiveBlock() const {
     if (receiver->deepest_block_id == incoming_block.prev_block_id) {
         balances = receiver->balances;
     } else {
+        if (receiver->blocks.find(incoming_block.prev_block_id) == receiver->blocks.end())
+            return;
         balances = receiver->calculateBalancesFromBlock(prev_block_id);
     }
 
