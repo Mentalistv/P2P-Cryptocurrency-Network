@@ -33,9 +33,10 @@ struct EventComparator {
 
 class MineBlock : public Event {
     public:
-    Block new_block;
+    int miner_id;
+    int mine_on_block_id;
 
-    MineBlock(double time, event_type type, Block new_block);
+    MineBlock(double time, event_type type, int miner_id, int mine_on_block_id);
     virtual ~MineBlock();
 
 
@@ -62,6 +63,7 @@ class ReceiveBlock : public Event {
 
     private:
         bool verifyBlock(vector<double> &balances) const;
+        void updateTransactionPool() const;
         void receiveBlock() const;
 
 };
