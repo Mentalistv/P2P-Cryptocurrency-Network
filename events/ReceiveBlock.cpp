@@ -35,6 +35,15 @@ bool ReceiveBlock::verifyBlock(vector<double> &balances) const {
 }
 
 
+void ReceiveBlock::updateTransactionPool() const {
+    Node *receiver = nodes[receiver_id];
+
+    for (Transaction txn: incoming_block.transactions) {
+        if (receiver->transaction_pool.find(txn.txn_ID) != receiver->transaction_pool.end())
+            receiver->transaction_pool.erase(txn.txn_ID);
+    }
+}
+
 void ReceiveBlock::processEvent() const {
     // cout << "Inside ReceiveBlock event at time " << time << " for receiver " << receiver_id << endl;
     receiveBlock();
@@ -58,12 +67,8 @@ void ReceiveBlock::receiveBlock() const {
     if (receiver->deepest_block_id == incoming_block.prev_block_id) {
         balances = receiver->balances;
     } else {
-        if (receiver->blocks.find(incoming_block.prev_block_id) == receiver->blocks.end()) {
-            return;
-        }
         balances = receiver->calculateBalancesFromBlock(prev_block_id);
     }
-
 
     // verifyBlock also updates the balances
     if (!verifyBlock(balances)) {
@@ -86,10 +91,8 @@ void ReceiveBlock::receiveBlock() const {
         receiver->balances = balances;
         
         double delay = getPoWDelay(receiver->hashing_power);
-        
-        // Create the new block
-        Block new_block = receiver->createNewBlock(receiver->deepest_block_id, time + delay);
-        event_queue.push(new MineBlock(time + delay, MINE_BLOCK, new_block));
+        Block new_block = receiver->createNewBlock(time);
+        event_queue.push(new MineBlock(time + delay, MINE_BLOCK, receiver_id, new_block));
 
     } else {
         // this means there is a fork

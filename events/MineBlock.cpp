@@ -2,24 +2,23 @@
 #include "../headers/Globals.h"
 
 MineBlock::MineBlock(
-    double time, event_type type, Block new_block
-) : Event(time, type), new_block(new_block) {}
+    double time, event_type type, int miner_id, Block new_block
+) : Event(time, type), miner_id(miner_id), new_block(new_block) {}
 
 MineBlock::~MineBlock() {}
 
 void MineBlock::processEvent() const {
-    int miner_id = new_block.owner_id;
     Node* miner = nodes[miner_id];
 
     // If the deepest chain has changed since I started mining, do nothing here
     if (new_block.prev_block_id != miner->deepest_block_id) {
-        cout << "Mine block rejected" << endl;
         return;
     }
 
-    // insert block to the node's tree and uddate the balances
+
     miner->blocks.insert({new_block.id, new_block});
     miner->deepest_block_id = new_block.id;
+    miner->blocks[miner->deepest_block_id].arrival_time = time;
     miner->updateBalances(new_block);
 
     // printf("\n------------- Node %d mined block %d at time %f ----------------------\n", miner->id, new_block.id, time);
@@ -31,7 +30,6 @@ void MineBlock::printEvent() const {
 }
 
 void MineBlock::transmitBlock(Block block) const {
-    int miner_id = block.owner_id;
     Node* miner = nodes[miner_id];
 
     // printf("Transmitted to ...\n");

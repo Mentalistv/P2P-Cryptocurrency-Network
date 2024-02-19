@@ -35,12 +35,15 @@ class Node {
 
         double calculateLatencyToNode(Node* node, int message_size);
 
-        // create a new block to add over longest chain
-        Block createNewBlock(int mine_on_block_id, double time);
+        // create a new block to add over the longest chain
+        Block createNewBlock();
         
         static vector<Node*> nodes;
 
         int getTransactionPoolSize();
 
         void updateBalances(Block block);
+
+        // This creates a new block mined on the deepest block
+        Block createNewBlock(double time);
 };

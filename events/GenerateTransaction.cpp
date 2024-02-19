@@ -50,6 +50,7 @@ Transaction GenerateTransaction::generate() const
 
     // Update transaction pool and balance
     generator->transaction_pool[txn.txn_ID] = txn;
+    generator->balance -= amount;
 
     // printf("\n------------- Node %d generated transaction %d at time %f ----------------------\n", generator->id, txn.txn_ID, time);
     
@@ -88,6 +89,8 @@ void GenerateTransaction::initializeNextTransaction() const
     // after a delay this node again generates a new transaction
     double delay;
     delay = exponentialDistribution((double) TRANSACTION_INTERARRIVAL_MEAN * NUMBER_OF_NODES);
+    // if (generator->id == 0)
+    //     cout << "delay " << delay << endl;
 
     event_queue.push(new GenerateTransaction(generator, type, time + delay));
 
