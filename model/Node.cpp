@@ -13,7 +13,7 @@ Node::Node(int id, NodeType node_type, NodeCPUType node_cpu_type) {
     this->balances = vector<double>(NUMBER_OF_NODES, INITIAL_BALANCE);
     this->balance = INITIAL_BALANCE;
 
-    blocks.insert({GENESIS_BLOCK_ID, Block(GENESIS_BLOCK_ID, id, NO_PREVIOUS_BLOCK, 0, {})});   
+    blocks.insert({GENESIS_BLOCK_ID, Block(GENESIS_BLOCK_ID, id, NO_PREVIOUS_BLOCK, 0.0, {})});   
 }
 
 vector<double> Node::calculateBalancesFromBlock(int block_id) {
@@ -80,6 +80,40 @@ int Node::getTransactionPoolSize() {
     return transaction_pool.size();  
 }
 
-Block Node::createNewBlock() {
-    
+Block Node::createNewBlock(double time) {
+    int count = 1023;
+    vector <Transaction> txns;
+
+    // Mark the used transactions
+    unordered_map<long, bool> used_txns;
+
+    Block temp = blocks[deepest_block_id];
+    while (temp.id != -1) {
+        for (Transaction t: temp.transactions) {
+            used_txns[t.txn_ID] = true;
+        }
+        temp = blocks[temp.prev_block_id];
+    }
+
+    // Add transactions except the used ones
+    for (auto it = transaction_pool.begin(); it != transaction_pool.end(); ++it) {
+        const pair<long, Transaction>& element = *it;
+        Transaction txn = element.second;
+        if (!used_txns[element.first] && txn.amount <= balances[txn.sender]) {
+            txns.push_back(element.second);
+            count--;
+        }
+        if (count == 0)
+            break;
+    }
+
+    Transaction coinbase(COINBASE_TXN_SENDER_ID, id, 50.0, time);
+    txns.push_back(coinbase);
+
+    Block new_block = Block(BLOCK_ID_GENERATOR++, id, deepest_block_id, time, txns);
+    int prev_height = blocks[deepest_block_id].height;
+    new_block.height = prev_height + 1;
+    new_block.arrival_time = time;
+
+    return new_block;
 }

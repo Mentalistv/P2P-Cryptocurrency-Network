@@ -215,7 +215,8 @@ int main(int argc, char const *argv[]) {
     for (Node* node: nodes) {
         event_queue.push(new GenerateTransaction(node, GENERATE_TRANSACTION, 0.0));
         double delay = getPoWDelay(node->hashing_power);
-        event_queue.push(new MineBlock(0.0 + delay, MINE_BLOCK, node->id, GENESIS_BLOCK_ID));
+        Block new_block = node->createNewBlock(0.0);
+        event_queue.push(new MineBlock(0.0 + delay, MINE_BLOCK, node->id, new_block));
     }
 
 
@@ -231,7 +232,8 @@ int main(int argc, char const *argv[]) {
             }
         }
 
-        // event->printEvent();
+        if (event->type == MINE_BLOCK)
+            event->printEvent();
         event->processEvent();
 
         event_queue.pop();

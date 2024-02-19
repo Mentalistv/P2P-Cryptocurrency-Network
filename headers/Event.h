@@ -34,9 +34,9 @@ struct EventComparator {
 class MineBlock : public Event {
     public:
     int miner_id;
-    int mine_on_block_id;
+    Block new_block;
 
-    MineBlock(double time, event_type type, int miner_id, int mine_on_block_id);
+    MineBlock(double time, event_type type, int miner_id, Block new_block);
     virtual ~MineBlock();
 
 

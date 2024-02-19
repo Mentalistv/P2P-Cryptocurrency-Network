@@ -1,7 +1,7 @@
 #ifndef SIMULATION_PARAMETERS_H
 #define SIMULATION_PARAMETERS_H
 
-const int NUMBER_OF_NODES = 100;
+const int NUMBER_OF_NODES = 10;
 const int MIN_PEERS_CONNECTED = 3;
 const int MAX_PEERS_CONNECTED = 6;
 
@@ -16,7 +16,7 @@ const int TRANSACTION_SIZE_BYTES = 1024; //bytes
 
 const double BLOCK_INTERARRIVAL_TIME = 600.0; //secs
 
-const double SPEND_FRACTION_OF_BALANCE = 10.0;
+const double SPEND_FRACTION_OF_BALANCE = 100.0;
 
 const double SIMULATION_TIME_MULTIPLIER = 100;
 

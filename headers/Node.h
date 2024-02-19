@@ -43,4 +43,7 @@ class Node {
         int getTransactionPoolSize();
 
         void updateBalances(Block block);
+
+        // This creates a new block mined on the deepest block
+        Block createNewBlock(double time);
 };

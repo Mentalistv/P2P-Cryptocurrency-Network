@@ -70,7 +70,6 @@ void ReceiveBlock::receiveBlock() const {
         balances = receiver->calculateBalancesFromBlock(prev_block_id);
     }
 
-
     // verifyBlock also updates the balances
     if (!verifyBlock(balances)) {
         return;
@@ -92,7 +91,8 @@ void ReceiveBlock::receiveBlock() const {
         receiver->balances = balances;
         
         double delay = getPoWDelay(receiver->hashing_power);
-        event_queue.push(new MineBlock(time + delay, MINE_BLOCK, receiver_id, incoming_block.id));
+        Block new_block = receiver->createNewBlock(time);
+        event_queue.push(new MineBlock(time + delay, MINE_BLOCK, receiver_id, new_block));
 
     } else {
         // this means there is a fork
