@@ -81,7 +81,7 @@ int Node::getTransactionPoolSize() {
 }
 
 Block Node::createNewBlock(double time) {
-    int count = 1023;
+    int count = 1022;
     vector <Transaction> txns;
 
     // Mark the used transactions
