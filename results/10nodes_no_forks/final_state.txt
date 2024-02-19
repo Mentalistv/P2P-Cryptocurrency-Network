@@ -1,0 +1,10 @@
+Node ID = 0 Hashing power = 0.0526316 Blocks = 62 Longest Chain = 62 CPU_LOW NODE_FAST Ratio of blocks mined = 0.0819672
+Node ID = 1 Hashing power = 0.0526316 Blocks = 62 Longest Chain = 62 CPU_LOW NODE_FAST Ratio of blocks mined = 0.0983607
+Node ID = 2 Hashing power = 0.0526316 Blocks = 62 Longest Chain = 62 CPU_LOW NODE_FAST Ratio of blocks mined = 0.0983607
+Node ID = 3 Hashing power = 0.0526316 Blocks = 62 Longest Chain = 62 CPU_LOW NODE_FAST Ratio of blocks mined = 0.0491803
+Node ID = 4 Hashing power = 0.0526316 Blocks = 62 Longest Chain = 62 CPU_LOW NODE_FAST Ratio of blocks mined = 0.0327869
+Node ID = 5 Hashing power = 0.0526316 Blocks = 62 Longest Chain = 62 CPU_LOW NODE_FAST Ratio of blocks mined = 0.0327869
+Node ID = 6 Hashing power = 0.0526316 Blocks = 62 Longest Chain = 62 CPU_LOW NODE_FAST Ratio of blocks mined = 0.114754
+Node ID = 7 Hashing power = 0.0526316 Blocks = 62 Longest Chain = 62 CPU_LOW NODE_SLOW Ratio of blocks mined = 0.0655738
+Node ID = 8 Hashing power = 0.0526316 Blocks = 62 Longest Chain = 62 CPU_LOW NODE_FAST Ratio of blocks mined = 0
+Node ID = 9 Hashing power = 0.526316 Blocks = 62 Longest Chain = 62 CPU_HIGH NODE_FAST Ratio of blocks mined = 0.42623
