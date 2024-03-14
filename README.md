@@ -6,6 +6,8 @@ The simulator generates blockchain tree for each node. To represent this it uses
 - `pip install pygraphviz`
 - `pip install matplotlib`
 
+Run the `init.sh` script
+
 ## Make the project
 - To change configuration edit the constants/SimulationParameters.h
 - for the configurations to take effect run make 

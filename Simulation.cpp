@@ -135,7 +135,6 @@ double printRatioForNumberOfBlocksGeneratedByCPUType() {
         temp = node0->blocks[temp.prev_block_id];
     }
 
-    cout << "Low CPU = " << lowCPU << endl;
 
     int highCPU = NUMBER_OF_NODES - lowCPU;
     int fast = NUMBER_OF_NODES - slow;
@@ -232,8 +231,7 @@ int main(int argc, char const *argv[]) {
             }
         }
 
-        if (event->type == MINE_BLOCK)
-            event->printEvent();
+        event->printEvent();
         event->processEvent();
 
         event_queue.pop();
