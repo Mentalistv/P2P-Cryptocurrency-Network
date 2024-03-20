@@ -45,6 +45,9 @@ class MineBlock : public Event {
     void printEvent() const override;
 
     void transmitBlock(Block block) const;
+
+    void honestMinerMines() const;
+    void selfishMinerMines() const;
 };
 
 

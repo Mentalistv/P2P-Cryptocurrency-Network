@@ -10,11 +10,21 @@ MineBlock::~MineBlock() {}
 void MineBlock::processEvent() const {
     Node* miner = nodes[miner_id];
 
+    if (miner->node_character_type == HONEST) {
+        honestMinerMines();
+    } else {
+        selfishMinerMines();
+    }
+}
+
+
+void MineBlock::honestMinerMines() const {
+    Node* miner = nodes[miner_id];
+
     // If the deepest chain has changed since I started mining, do nothing here
     if (new_block.prev_block_id != miner->deepest_block_id) {
         return;
     }
-
 
     miner->blocks.insert({new_block.id, new_block});
     miner->deepest_block_id = new_block.id;
@@ -24,6 +34,19 @@ void MineBlock::processEvent() const {
     // printf("\n------------- Node %d mined block %d at time %f ----------------------\n", miner->id, new_block.id, time);
     transmitBlock(new_block);
 }
+
+
+void MineBlock::selfishMinerMines() const {
+    Node* miner = nodes[miner_id];
+
+    // If the selfish miner is no longer mining on the block he set out to mine on
+    if (new_block.prev_block_id != miner->mining_on_block_id) {
+        return;
+    }
+
+    // TODO
+}
+
 
 void MineBlock::printEvent() const {
     cout << "Event MineBlock at time = " << time << endl; 

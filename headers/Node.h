@@ -48,4 +48,13 @@ class Node {
 
         // This creates a new block mined on the deepest block
         Block createNewBlock(double time);
+
+
+
+
+        // Fields specific to Selfish Miner
+        queue<Block> private_chain;
+        int mining_on_block_id; // This is to keep track of block on which selfish miner is mining
+        int selfish_miner_state = 0;
+        
 };

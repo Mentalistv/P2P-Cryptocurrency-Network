@@ -63,8 +63,8 @@ UTILITY_OBJ_FILES= RandomGenerator.o
 SIMULATION_FILES = Simulation.cpp
 SIMULATION_OBJ_FILES = Simulation.o
 
-MODEL_FILES = model/Block.cpp model/Transaction.cpp model/Node.cpp
-MODEL_OBJ_FILES = Block.o Transaction.o Node.o
+MODEL_FILES = model/Block.cpp model/Transaction.cpp model/Node.cpp model/SelfishNode.cpp
+MODEL_OBJ_FILES = Block.o Transaction.o Node.o SelfishNode.o
 
 EVENT_FILES = events/ReceiveBlock.cpp events/GenerateTransaction.cpp events/ReceiveTransaction.cpp events/Event.cpp events/MineBlock.cpp
 EVENT_OBJ_FILES = ReceiveBlock.o GenerateTransaction.o ReceiveTransaction.o Event.o MineBlock.o
