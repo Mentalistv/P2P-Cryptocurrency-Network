@@ -4,10 +4,11 @@
 #include "../headers/Globals.h"
 
 
-Node::Node(int id, NodeType node_type, NodeCPUType node_cpu_type) {
+Node::Node(int id, NodeType node_type, NodeCPUType node_cpu_type, NodeCharacterType nc) {
     this->id = id;
     this->node_type = node_type;
     this->node_cpu_type = node_cpu_type;
+    this->node_character_type = nc;
     
     deepest_block_id = GENESIS_BLOCK_ID;
     this->balances = vector<double>(NUMBER_OF_NODES, INITIAL_BALANCE);

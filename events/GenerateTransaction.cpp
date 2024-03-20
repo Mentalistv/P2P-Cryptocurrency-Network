@@ -10,6 +10,11 @@ GenerateTransaction::~GenerateTransaction() {}
 
 void GenerateTransaction::processEvent() const {
     // cout << "Inside GenerateTransaction event at time " << time << endl;
+
+    // Selfish miner is not generating transactions in our simulation
+    if (generator->node_character_type == SELFISH)
+        return;
+
     Transaction txn = generate();
     transmit(txn);
     initializeNextTransaction();

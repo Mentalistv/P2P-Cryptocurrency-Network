@@ -11,6 +11,11 @@ enum NodeCPUType {
     NODE_CPU_SLOW
 };
 
+enum NodeCharacterType {
+    HONEST,
+    SELFISH
+};
+
 const int GENESIS_BLOCK_ID = -1;
 const int NO_PREVIOUS_BLOCK = -2;
 

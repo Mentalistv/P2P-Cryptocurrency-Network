@@ -16,19 +16,22 @@ priority_queue<Event*, std::vector<Event*>, EventComparator> event_queue;
 int BLOCK_ID_GENERATOR = 0;
 double LIGHT_SPEED_DELAY = 0;
 vector<vector<double>> propagation_delays;
+int NUMBER_OF_HONEST_NODES = NUMBER_OF_NODES - 2;
 
 
-void initilizeHashingPower(vector<Node*> &all_nodes, float slow, float lowCPU) {
+void initilizeHashingPower(
+    vector<Node*> &all_nodes, float slow, float lowCPU, float selfish1CPUp, float selfish2CPUp
+) {
     int slow_nodes = slow;
-    int fast_nodes = NUMBER_OF_NODES - slow_nodes;
+    int fast_nodes = NUMBER_OF_HONEST_NODES - slow_nodes;
     int low_CPU_nodes = lowCPU;
-    int high_CPU_nodes = NUMBER_OF_NODES - low_CPU_nodes;
+    int high_CPU_nodes = NUMBER_OF_HONEST_NODES - low_CPU_nodes;
 
-    double hp_slow = 1.0/(10*high_CPU_nodes + low_CPU_nodes);
-    double hp_fast = 10*hp_slow;
+    double hp_slow = (1.0 - selfish1CPUp - selfish2CPUp)/(10 * high_CPU_nodes + low_CPU_nodes);
+    double hp_fast = 10 * hp_slow;
 
     while (slow_nodes > 0) {
-        int rand_id = uniformDistributionInt(0, NUMBER_OF_NODES - 1);
+        int rand_id = uniformDistributionInt(0, NUMBER_OF_HONEST_NODES - 1);
         if (all_nodes[rand_id]->node_type == NODE_FAST) {
             all_nodes[rand_id]->node_type = NODE_SLOW;
             slow_nodes--;
@@ -36,7 +39,7 @@ void initilizeHashingPower(vector<Node*> &all_nodes, float slow, float lowCPU) {
     }
 
     while (low_CPU_nodes > 0) {
-        int rand_id = uniformDistributionInt(0, NUMBER_OF_NODES - 1);
+        int rand_id = uniformDistributionInt(0, NUMBER_OF_HONEST_NODES - 1);
 
         if (all_nodes[rand_id]->node_cpu_type == NODE_CPU_FAST) {
             all_nodes[rand_id]->node_cpu_type = NODE_CPU_SLOW;
@@ -45,9 +48,9 @@ void initilizeHashingPower(vector<Node*> &all_nodes, float slow, float lowCPU) {
         }
     }
 
-    for (Node* node: all_nodes) {
-        if (node->node_cpu_type == NODE_CPU_FAST)
-            node->hashing_power = hp_fast;
+    for (int i = 0; i < NUMBER_OF_HONEST_NODES; i++) {
+        if (all_nodes[i]->node_cpu_type == NODE_CPU_FAST)
+            all_nodes[i]->hashing_power = hp_fast;
     }
 }
 
@@ -187,24 +190,38 @@ int main(int argc, char const *argv[]) {
     
     int node_id = 0;
 
-    if (argc != 3) {
+    if (argc != 5) {
         cout << "Usage: ./simulation <slow_nodes_%> <low_cpu_%>";
         return 1;
     }
 
     int slowp = atoi(argv[1]);
     int lowCPUp = atoi(argv[2]);
-    float slow = NUMBER_OF_NODES * (float) slowp/100.0;
-    float lowCPU = NUMBER_OF_NODES * (float) lowCPUp/100.0;
+    int selfish1 = atoi(argv[3]); 
+    int selfish2 = atoi(argv[4]); 
 
     vector<Node*> allnodes;
 
-    for (int i = 0; i < NUMBER_OF_NODES; i++) {
-        // the distri
-        allnodes.push_back(new Node(node_id++, NODE_FAST, NODE_CPU_FAST));
-    }
 
-    initilizeHashingPower(allnodes, slow, lowCPU);
+    for (int i = 0; i < NUMBER_OF_HONEST_NODES; i++) {
+        allnodes.push_back(new Node(node_id++, NODE_FAST, NODE_CPU_FAST, HONEST));
+    }
+    float selfish1CPUp = selfish1 / 100.0;
+    float selfish2CPUp = selfish2 / 100.0;
+
+    Node* selfish_node_1 = new Node(node_id++, NODE_FAST, NODE_CPU_FAST, SELFISH);
+    selfish_node_1->hashing_power = selfish1CPUp; 
+    
+    Node* selfish_node_2 = new Node(node_id++, NODE_FAST, NODE_CPU_FAST, SELFISH);
+    selfish_node_2->hashing_power = selfish2CPUp; 
+      
+    allnodes.push_back(selfish_node_1);
+    allnodes.push_back(selfish_node_2);
+
+
+    float slow = NUMBER_OF_HONEST_NODES * (float) slowp/100.0;
+    float lowCPU = NUMBER_OF_HONEST_NODES * (float) lowCPUp/100.0;
+    initilizeHashingPower(allnodes, slow, lowCPU, selfish1CPUp, selfish2CPUp);
 
     nodes = allnodes;
 

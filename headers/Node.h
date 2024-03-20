@@ -1,9 +1,10 @@
 #include<string>
 #include<vector>
 #include <unordered_map> 
+#include <queue>
 
 #include "../constants/NodeConstants.h"
-#include "../headers/Block.h"
+#include "Block.h"
 
 #ifndef NODE_H
 #define NODE_H
@@ -14,13 +15,14 @@ using namespace std;
 class Node {
     public:
         Node();
-        Node(int id, NodeType node_type, NodeCPUType node_cpu_type);
+        Node(int id, NodeType node_type, NodeCPUType node_cpu_type, NodeCharacterType nc);
         
         int id;
         double balance;
         vector<double> balances; // balances as per the current longest chain
         NodeType node_type;
         NodeCPUType node_cpu_type;
+        NodeCharacterType node_character_type;
 
         vector<int> links;
         unordered_map<int, Block> blocks;
