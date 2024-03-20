@@ -38,12 +38,6 @@ void MineBlock::honestMinerMines() const {
 
 void MineBlock::selfishMinerMines() const {
     Node* miner = nodes[miner_id];
-
-    // If the selfish miner is no longer mining on the block he set out to mine on
-    if (new_block.prev_block_id != miner->mining_on_block_id) {
-        return;
-    }
-
     // TODO
 }
 

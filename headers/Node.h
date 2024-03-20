@@ -54,7 +54,6 @@ class Node {
 
         // Fields specific to Selfish Miner
         queue<Block> private_chain;
-        int mining_on_block_id; // This is to keep track of block on which selfish miner is mining
-        int selfish_miner_state = 0;
+        int lead = 0;
         
 };
