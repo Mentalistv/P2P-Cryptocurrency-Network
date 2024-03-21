@@ -23,6 +23,10 @@ void MineBlock::processEvent() const {
 
     // printf("\n------------- Node %d mined block %d at time %f ----------------------\n", miner->id, new_block.id, time);
     transmitBlock(new_block);
+    
+    double delay = getPoWDelay(miner->hashing_power);
+    Block new_block = miner->createNewBlock(time);
+    event_queue.push(new MineBlock(time + delay, MINE_BLOCK, miner_id, new_block));
 }
 
 void MineBlock::printEvent() const {
