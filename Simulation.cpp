@@ -74,7 +74,8 @@ void printFinalState() {
 
     Node* node0 = nodes[0];
     Block temp = node0->blocks[node0->deepest_block_id];
-    int lc_length = temp.height;
+    // int lc_length = temp.height;
+    int lc_length = nodes[0]->blocks[nodes[0]->deepest_block_id].height + 1;
 
     while (temp.id != GENESIS_BLOCK_ID) {
         blocks_mined[temp.owner_id]++;
@@ -99,7 +100,7 @@ void printFinalState() {
             outfile << " NODE_SLOW";
         }
 
-        outfile << " Ratio of blocks mined = " << (double) blocks_mined[node->id] / (double) lc_length  << endl;
+        outfile <<  " Blocks mined = " << blocks_mined[node->id] << " Ratio of blocks mined = " << (double) blocks_mined[node->id] / (double) lc_length  << endl;
     }
 }
 
@@ -191,7 +192,7 @@ int main(int argc, char const *argv[]) {
     int node_id = 0;
 
     if (argc != 5) {
-        cout << "Usage: ./simulation <slow_nodes_%> <low_cpu_%>";
+        cout << "Usage: ./simulation <slow_nodes_%> <low_cpu_%> <selfish1_hp%> <selfish2_hp%>";
         return 1;
     }
 
@@ -248,7 +249,7 @@ int main(int argc, char const *argv[]) {
             }
         }
 
-        event->printEvent();
+        // event->printEvent();
         event->processEvent();
 
         event_queue.pop();

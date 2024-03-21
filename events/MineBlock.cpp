@@ -40,22 +40,24 @@ void MineBlock::selfishMinerMines() const {
     Node* miner = nodes[miner_id];
     // TODO
     
-    if(miner->lead == 0) {
-        if(new_block.prev_block_id != miner->deepest_block_id)
-            return;
-    }
+    if(miner->lead == 0 && new_block.prev_block_id != miner->deepest_block_id)
+        return;
 
-    miner->lead++;
-    miner->blocks.insert({new_block.id, new_block});
-
-    if(miner->lead < 2)
+    if (miner->lead == 0 && miner->state_zero_dash) {
         transmitBlock(new_block);
-    else{
+        miner->state_zero_dash = 0;
+        miner->deepest_block_id = new_block.id;
+    } else {
+        miner->lead++;
         miner->private_chain.push(new_block);
     }
 
+    miner->blocks.insert({new_block.id, new_block});
+
     double delay = getPoWDelay(miner->hashing_power);
     Block new_block = miner->createNewBlock(time);
+    //debug
+    printf("\nSelfish miner %d mine event pushed\n", miner->id);
     event_queue.push(new MineBlock(time + delay, MINE_BLOCK, miner_id, new_block));
 }
 
