@@ -87,8 +87,18 @@ Block Node::createNewBlock(double time) {
 
     // Mark the used transactions
     unordered_map<long, bool> used_txns;
+    int mine_block_id;
 
-    Block temp = blocks[deepest_block_id];
+    if (node_character_type == HONEST) {
+        mine_block_id = deepest_block_id;
+    } else {
+        if(private_chain.empty())
+            mine_block_id = deepest_block_id;
+        else
+            mine_block_id = private_chain.back().id;
+    }
+
+    Block temp = blocks[mine_block_id];
     while (temp.id != -1) {
         for (Transaction t: temp.transactions) {
             used_txns[t.txn_ID] = true;
@@ -111,8 +121,8 @@ Block Node::createNewBlock(double time) {
     Transaction coinbase(COINBASE_TXN_SENDER_ID, id, 50.0, time);
     txns.push_back(coinbase);
 
-    Block new_block = Block(BLOCK_ID_GENERATOR++, id, deepest_block_id, time, txns);
-    int prev_height = blocks[deepest_block_id].height;
+    Block new_block = Block(BLOCK_ID_GENERATOR++, id, mine_block_id, time, txns);
+    int prev_height = blocks[mine_block_id].height;
     new_block.height = prev_height + 1;
     new_block.arrival_time = time;
 

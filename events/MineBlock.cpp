@@ -39,6 +39,24 @@ void MineBlock::honestMinerMines() const {
 void MineBlock::selfishMinerMines() const {
     Node* miner = nodes[miner_id];
     // TODO
+    
+    if(miner->lead == 0) {
+        if(new_block.prev_block_id != miner->deepest_block_id)
+            return;
+    }
+
+    miner->lead++;
+    miner->blocks.insert({new_block.id, new_block});
+
+    if(miner->lead < 2)
+        transmitBlock(new_block);
+    else{
+        miner->private_chain.push(new_block);
+    }
+
+    double delay = getPoWDelay(miner->hashing_power);
+    Block new_block = miner->createNewBlock(time);
+    event_queue.push(new MineBlock(time + delay, MINE_BLOCK, miner_id, new_block));
 }
 
 
