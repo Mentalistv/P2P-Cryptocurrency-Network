@@ -128,3 +128,25 @@ Block Node::createNewBlock(double time) {
 
     return new_block;
 }
+
+
+void transmitBlock(Node* node, Block block, double time) {
+    for (int neighbour_id : node->links) {
+        if (neighbour_id != node->id) {
+            Node *neighbour = nodes.at(neighbour_id);
+            int message_size_bytes = block.getMessageSizeBytes();
+            double latency = node->calculateLatencyToNode(neighbour, message_size_bytes);
+
+            event_queue.push(new ReceiveBlock(time + latency, RECEIVE_BLOCK, neighbour_id, node->id, block));
+        }
+    }
+}
+
+void Node::releasePrivateChain(double time) {
+    while (!private_chain.empty()) {
+        Block secret_block = private_chain.front();
+        transmitBlock(this, secret_block, time);
+        private_chain.pop();
+        cout << "hereee" << endl;
+    }
+}

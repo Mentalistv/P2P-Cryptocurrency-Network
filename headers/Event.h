@@ -66,11 +66,13 @@ class ReceiveBlock : public Event {
     void selfishMinerReceives() const;
     void transmitBlock(Block block) const;
     void checkChildrenInWaitQueue(Block incoming_block) const;
+    int setBlockHeights(int block_id) const;
 
     private:
         bool verifyBlock(vector<double> &balances) const;
         void updateTransactionPool() const;
         void receiveBlock() const;
+        void selfishMinerReceiveBlock() const;
 
 };
 

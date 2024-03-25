@@ -100,7 +100,7 @@ void printFinalState() {
             outfile << " NODE_SLOW";
         }
 
-        outfile <<  " Blocks mined = " << blocks_mined[node->id] << " Ratio of blocks mined = " << (double) blocks_mined[node->id] / (double) lc_length  << endl;
+        outfile <<  " Blocks mined = " << blocks_mined[node->id] << " Ratio of blocks mined = " << (double) blocks_mined[node->id] / (double) lc_length  << " Private Chain length = " << node->private_chain.size() << " Wait queue size = " << node->wait_queue.size() << endl;
     }
 }
 
@@ -113,8 +113,9 @@ void printBlockTree() {
         if (outfile.is_open()) {
             for (auto itr: node->blocks) {
                 Block b = itr.second;
+                string type = nodes[b.owner_id]->node_character_type == HONEST ? "h" : "s";
                 if (itr.second.prev_block_id != NO_PREVIOUS_BLOCK)
-                    outfile << b.id << "," << b.prev_block_id << "," << b.arrival_time << "," << b.transactions.size() << endl;
+                    outfile << b.id << "," << b.prev_block_id << "," << b.arrival_time << "," << b.transactions.size() << "," << type << endl;
             }
 
             outfile.close();
@@ -243,13 +244,15 @@ int main(int argc, char const *argv[]) {
         Event* event = event_queue.top();
 
         if (event->time > simulation_stop_time) {
+            nodes[NUMBER_OF_NODES - 2]->releasePrivateChain(event->time);
+            nodes[NUMBER_OF_NODES - 1]->releasePrivateChain(event->time);
             if (event->type == GENERATE_TRANSACTION || event->type == MINE_BLOCK) {
                 event_queue.pop();
                 continue;
             }
         }
 
-        // event->printEvent();
+        event->printEvent();
         event->processEvent();
 
         event_queue.pop();
