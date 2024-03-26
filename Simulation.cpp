@@ -100,7 +100,7 @@ void printFinalState() {
             outfile << " NODE_SLOW";
         }
 
-        outfile <<  " Blocks mined = " << blocks_mined[node->id] << " Ratio of blocks mined = " << (double) blocks_mined[node->id] / (double) lc_length  << " Private Chain length = " << node->private_chain.size() << " Wait queue size = " << node->wait_queue.size() << endl;
+        outfile <<  " Blocks mined = " << blocks_mined[node->id] << " Ratio of blocks mined = " << (double) blocks_mined[node->id] / (double) lc_length  << " PC = " << node->private_chain.size() << " WQ = " << node->wait_queue.size() << endl;
     }
 }
 
@@ -252,7 +252,7 @@ int main(int argc, char const *argv[]) {
             }
         }
 
-        event->printEvent();
+        // event->printEvent();
         event->processEvent();
 
         event_queue.pop();
