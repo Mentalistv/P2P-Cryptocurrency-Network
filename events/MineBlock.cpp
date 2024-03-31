@@ -40,24 +40,25 @@ void MineBlock::selfishMinerMines() const {
     Node* miner = nodes[miner_id];
     // TODO
     
-    if(miner->lead == 0 && new_block.prev_block_id != miner->deepest_block_id)
-        return;
-
-    if (miner->lead == 0 && miner->state_zero_dash) {
-        transmitBlock(new_block);
-        miner->state_zero_dash = 0;
-        miner->deepest_block_id = new_block.id;
+    if(miner->lead == 0 && new_block.prev_block_id != miner->deepest_block_id) {
+        // printf("Selfish Miner mineblock rejected %d and %d pc = %d\n", new_block.prev_block_id, miner->deepest_block_id, miner->private_chain.size());
+    
     } else {
-        miner->lead++;
-        miner->private_chain.push(new_block);
-    }
+        if (miner->lead == 0 && miner->state_zero_dash) {
+            // printf("Transitioning from 0' to 0 pc size = %d\n", miner->private_chain.size());
+            transmitBlock(new_block);
+            miner->state_zero_dash = 0;
+            miner->deepest_block_id = new_block.id;
+        } else {
+            miner->lead++;
+            miner->private_chain.push(new_block);
+        }
 
-    miner->blocks.insert({new_block.id, new_block});
+        miner->blocks.insert({new_block.id, new_block});
+    }
 
     double delay = getPoWDelay(miner->hashing_power);
     Block new_block = miner->createNewBlock(time);
-    //debug
-    printf("\nSelfish miner %d mine event pushed\n", miner->id);
     event_queue.push(new MineBlock(time + delay, MINE_BLOCK, miner_id, new_block));
 }
 

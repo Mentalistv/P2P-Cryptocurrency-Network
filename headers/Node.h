@@ -50,12 +50,13 @@ class Node {
         Block createNewBlock(double time);
 
 
-        unordered_map<int, pair<Block, double>> wait_queue;
+        vector<int> wait_queue;
 
 
         // Fields specific to Selfish Miner
         queue<Block> private_chain;
         int lead = 0;
         int state_zero_dash = 0;
+        void releasePrivateChain(double time);
         
 };

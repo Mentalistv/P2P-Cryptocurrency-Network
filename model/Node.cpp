@@ -23,7 +23,12 @@ vector<double> Node::calculateBalancesFromBlock(int block_id) {
     vector<double> balances(NUMBER_OF_NODES, 0);
 
     while(blocks[temp_id].id != GENESIS_BLOCK_ID) {
+        // cout << temp_id << " " << blocks[temp_id].prev_block_id << " " << blocks[temp_id].height << endl;
         vector<Transaction> transactions = blocks[temp_id].transactions;
+
+        // if (temp_id == 0 && blocks[temp_id].prev_block_id == 0) {
+        //     exit(1);
+        // }
 
         for (Transaction txn: transactions) {
             if (txn.sender != COINBASE_TXN_SENDER_ID)
@@ -127,4 +132,25 @@ Block Node::createNewBlock(double time) {
     new_block.arrival_time = time;
 
     return new_block;
+}
+
+
+void transmitBlock(Node* node, Block block, double time) {
+    for (int neighbour_id : node->links) {
+        if (neighbour_id != node->id) {
+            Node *neighbour = nodes.at(neighbour_id);
+            int message_size_bytes = block.getMessageSizeBytes();
+            double latency = node->calculateLatencyToNode(neighbour, message_size_bytes);
+
+            event_queue.push(new ReceiveBlock(time + latency, RECEIVE_BLOCK, neighbour_id, node->id, block));
+        }
+    }
+}
+
+void Node::releasePrivateChain(double time) {
+    while (!private_chain.empty()) {
+        Block secret_block = private_chain.front();
+        transmitBlock(this, secret_block, time);
+        private_chain.pop();
+    }
 }

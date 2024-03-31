@@ -71,6 +71,7 @@ void printFinalState() {
     ofstream outfile(opfilename, ios::out | ios::trunc);
 
     vector<int> blocks_mined(NUMBER_OF_NODES, 0);
+    vector<int> total_mined(NUMBER_OF_NODES, 0);
 
     Node* node0 = nodes[0];
     Block temp = node0->blocks[node0->deepest_block_id];
@@ -88,6 +89,12 @@ void printFinalState() {
             << node->blocks.size() << " Longest Chain = " << node->blocks[node->deepest_block_id].height + 1;
 
 
+        for (auto itr: node->blocks) {
+            if (itr.second.owner_id == node->id && itr.second.id != -1)
+                total_mined[node->id]++;
+        }
+
+
         if (node->node_cpu_type == NODE_CPU_FAST) {
             outfile << " CPU_HIGH";  
         } else {
@@ -100,7 +107,7 @@ void printFinalState() {
             outfile << " NODE_SLOW";
         }
 
-        outfile <<  " Blocks mined = " << blocks_mined[node->id] << " Ratio of blocks mined = " << (double) blocks_mined[node->id] / (double) lc_length  << endl;
+        outfile <<  " Blocks mined in LC = " << blocks_mined[node->id] << " Total Mined = " << total_mined[node->id] << " Ratio of blocks mined = " << (double) blocks_mined[node->id] / (double) lc_length  << " PC = " << node->private_chain.size() << " WQ = " << node->wait_queue.size() << endl;
     }
 }
 
@@ -113,8 +120,15 @@ void printBlockTree() {
         if (outfile.is_open()) {
             for (auto itr: node->blocks) {
                 Block b = itr.second;
+                string type = nodes[b.owner_id]->node_character_type == HONEST ? "h" : "s";
+                int selfish_miner_no = 0;
+                
+                if (nodes[b.owner_id]->node_character_type == SELFISH) {
+                    selfish_miner_no = b.owner_id - NUMBER_OF_HONEST_NODES + 1;
+                }
+
                 if (itr.second.prev_block_id != NO_PREVIOUS_BLOCK)
-                    outfile << b.id << "," << b.prev_block_id << "," << b.arrival_time << "," << b.transactions.size() << endl;
+                    outfile << b.id << "," << b.prev_block_id << "," << b.arrival_time << "," << b.transactions.size() << "," << type << "," << selfish_miner_no << "," << b.owner_id << endl;
             }
 
             outfile.close();
@@ -243,13 +257,15 @@ int main(int argc, char const *argv[]) {
         Event* event = event_queue.top();
 
         if (event->time > simulation_stop_time) {
+            // nodes[NUMBER_OF_NODES - 2]->releasePrivateChain(event->time);
+            // nodes[NUMBER_OF_NODES - 1]->releasePrivateChain(event->time);
             if (event->type == GENERATE_TRANSACTION || event->type == MINE_BLOCK) {
                 event_queue.pop();
                 continue;
             }
         }
 
-        // event->printEvent();
+        event->printEvent();
         event->processEvent();
 
         event_queue.pop();
