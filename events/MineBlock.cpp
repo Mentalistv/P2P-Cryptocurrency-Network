@@ -45,7 +45,7 @@ void MineBlock::selfishMinerMines() const {
     
     } else {
         if (miner->lead == 0 && miner->state_zero_dash) {
-            printf("Transitioning from 0' to 0 pc size = %d\n", miner->private_chain.size());
+            // printf("Transitioning from 0' to 0 pc size = %d\n", miner->private_chain.size());
             transmitBlock(new_block);
             miner->state_zero_dash = 0;
             miner->deepest_block_id = new_block.id;

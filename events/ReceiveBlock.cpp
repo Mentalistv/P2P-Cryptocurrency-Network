@@ -91,7 +91,7 @@ void ReceiveBlock::selfishMinerReceives() const {
         Block secret_block = receiver->private_chain.front();
         receiver->private_chain.pop();
         
-        printf("selfish miner %d is releasing block %d\n", receiver->id, secret_block.id);
+        // printf("selfish miner %d is releasing block %d\n", receiver->id, secret_block.id);
         // Add receive block events to transmit the received block
         transmitBlock(secret_block);
 
@@ -139,7 +139,7 @@ void ReceiveBlock::receiveBlock() const {
         return;
     }
 
-    printf("Block with ID %d received at receiver %d -----\n", incoming_block.id, receiver->id);
+    // printf("Block with ID %d received at receiver %d -----\n", incoming_block.id, receiver->id);
 
     int prev_block_id = incoming_block.prev_block_id;
 
@@ -161,7 +161,7 @@ void ReceiveBlock::receiveBlock() const {
 
     // verifyBlock also updates the balances
     if (!verifyBlock(balances)) {
-        printf("Rejecting Block %d at receiver %d\n", incoming_block.id, receiver->id);
+        // printf("Rejecting Block %d at receiver %d\n", incoming_block.id, receiver->id);
         return;
     }
     
@@ -303,7 +303,7 @@ int ReceiveBlock::setBlockHeights(int block_id) const {
     Block incoming_block = receiver->blocks[block_id];
 
     if (receiver->blocks.find(incoming_block.prev_block_id) == receiver->blocks.end()) {
-        printf("Block with ID %d not found at receiver %d\n", incoming_block.prev_block_id, receiver->id);
+        // printf("Block with ID %d not found at receiver %d\n", incoming_block.prev_block_id, receiver->id);
         return -1;
     } else if (incoming_block.height != -1) {
         return incoming_block.height;
@@ -335,9 +335,9 @@ void ReceiveBlock::transmitBlock(Block block) const {
             double latency = receiver->calculateLatencyToNode(neighbour, message_size_bytes);
 
 
-            if (receiver->node_character_type == HONEST && block.owner_id == 8 || block.owner_id == 9) {
-                printf("Hosnest node %d transmitting selfish block %d to %d\n", receiver->id, block.id, neighbour->id);
-            }
+            // if (receiver->node_character_type == HONEST && block.owner_id == 8 || block.owner_id == 9) {
+            //     printf("Hosnest node %d transmitting selfish block %d to %d\n", receiver->id, block.id, neighbour->id);
+            // }
 
 
             event_queue.push(new ReceiveBlock(time + latency, RECEIVE_BLOCK, neighbour_id, receiver_id, block));
