@@ -334,12 +334,6 @@ void ReceiveBlock::transmitBlock(Block block) const {
             int message_size_bytes = block.getMessageSizeBytes();
             double latency = receiver->calculateLatencyToNode(neighbour, message_size_bytes);
 
-
-            // if (receiver->node_character_type == HONEST && block.owner_id == 8 || block.owner_id == 9) {
-            //     printf("Hosnest node %d transmitting selfish block %d to %d\n", receiver->id, block.id, neighbour->id);
-            // }
-
-
             event_queue.push(new ReceiveBlock(time + latency, RECEIVE_BLOCK, neighbour_id, receiver_id, block));
         }
     }
