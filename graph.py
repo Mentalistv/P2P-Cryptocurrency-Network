@@ -22,12 +22,18 @@ with open(csv_file, 'r') as csvfile:
     edges = csv.reader(csvfile)
   
     for edge in edges:
-        G.add_edge(edge[0], edge[1])
         edge_type = edge[4]
+        attacker_type = edge[5]
+
+        edge_color = 'green'
         if edge_type == 's':
-            edge_colors.append('red')
-        else:
-            edge_colors.append('blue')
+            if attacker_type == '1':
+                edge_color = 'red'
+            elif attacker_type == '2':
+                edge_color = 'blue'
+
+        G.add_edge(edge[0], edge[1], color=edge_color)
+
 
 # Create a layout using graphviz_layout
 pos = graphviz_layout(G, prog='dot')
@@ -39,13 +45,17 @@ root_pos = pos[root_node]
 
 pos = {k: (pos[k][1], -pos[k][0]) for k in pos}
 
-#print(G.nodes().size())
+edges_list = list(G.edges())
 
-# Create a list of colors, assigning a different color to the root node
-node_colors = ['red' if node == root_node else 'blue' for node in G.nodes()]
+
+for edge in edges_list:
+    G.edges[edge[0], edge[1]]
+    edge_colors.append(G.edges[edge[0], edge[1]]["color"])
+
 
 # Visualize the blockchain tree
-nx.draw(G, pos, with_labels=False, node_size=20, node_color=node_colors, edge_color=edge_colors, font_size=4, arrowsize=3)
+# nx.draw(G, pos, with_labels=True, node_size=250, node_color='black', edge_color=edge_colors, font_size=6, font_color='white', arrowsize=3)
+nx.draw(G, pos, with_labels=False, node_size=30, node_color='black', edge_color=edge_colors, font_size=6, arrowsize=3)
 
 # Get the base name of the input CSV file (excluding extension)
 file_name = os.path.splitext(os.path.basename(csv_file))[0]
