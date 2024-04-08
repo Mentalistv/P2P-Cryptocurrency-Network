@@ -107,8 +107,27 @@ void printFinalState() {
             outfile << " NODE_SLOW";
         }
 
-        outfile <<  " Blocks mined in LC = " << blocks_mined[node->id] << " Total Mined = " << total_mined[node->id] << " Ratio of blocks mined = " << (double) blocks_mined[node->id] / (double) lc_length  << " PC = " << node->private_chain.size() << " WQ = " << node->wait_queue.size() << endl;
+        float mpu = 0;
+        
+        if (total_mined[node->id] != 0) {
+            mpu = (float) blocks_mined[node->id]/ (float) total_mined[node->id];
+        }
+
+        outfile <<  " Blocks mined in LC = " << blocks_mined[node->id] << " Total Mined = " << total_mined[node->id] << " MPU = " << mpu << " Ratio of blocks mined = " << (double) blocks_mined[node->id] / (double) lc_length  << " PC = " << node->private_chain.size() << " WQ = " << node->wait_queue.size() << endl;
     }
+
+    int total_blocks = 0;
+    for (int mined: total_mined)
+        total_blocks += mined;
+
+    float mpu_overall = 0;
+
+    if (total_blocks != 0)
+        mpu_overall = (float) (nodes[0]->blocks[nodes[0]->deepest_block_id].height)/ (float)total_blocks;
+
+    cout << "LC = " << (nodes[0]->blocks[nodes[0]->deepest_block_id].height) << " tb = " << total_blocks << endl;
+
+    outfile << "MPU overall = " << mpu_overall << endl;
 }
 
 void printBlockTree() {
